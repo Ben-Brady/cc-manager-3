@@ -38,14 +38,12 @@ const ComputerSection: FC<{ computer: ComputerInfo; conn: WsConnection }> = ({
                 </span>
             </div>
             <div className="flex flex-col justify-between mt-4 gap-2">
-                <div className="flex gap-2">
                     <Button onClick={actions.restart}>Restart</Button>
                     {computer.type === "turtle" && (
                         <>
                             <TurtleControls conn={conn} turtle={computer} />
                         </>
                     )}
-                </div>
             </div>
         </div>
     );

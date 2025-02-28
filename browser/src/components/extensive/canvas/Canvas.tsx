@@ -3,9 +3,10 @@ import { Canvas } from "@react-three/fiber";
 import { FC, useEffect, useState } from "react";
 import * as THREE from "three";
 
+import Container from "@/components/elements/Container";
+import { Block } from "@/hook/useComputerInfo";
 import { Vec3 } from "@/lib/packet";
 import { ComputerInfo } from "@/lib/types";
-import Container from "@/components/elements/Container";
 
 const ComputerBox: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     const { position } = computer;
@@ -25,7 +26,22 @@ const ComputerBox: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     );
 };
 
-const ComputerCanvas: FC<{ computers: ComputerInfo[] }> = ({ computers }) => {
+const BlockBox: FC<{ block: Block }> = ({ block }) => {
+    const color = "#37b6ff";
+    if (block.name === "minecraft:air") return null;
+
+    return (
+        <mesh position={vectorToArray(block.position)} scale={1}>
+            <boxGeometry args={[1, 1, 1]} />
+            <meshStandardMaterial color={color} opacity={0.6} />
+        </mesh>
+    );
+};
+
+const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
+    computers,
+    blocks,
+}) => {
     const turtle = computers.find((v) => v.type === "turtle");
     const [initialPosition, setInitialPosition] = useState<THREE.Vector3 | undefined>();
 
@@ -55,9 +71,12 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[] }> = ({ computers }) => {
             >
                 <OrbitControls target={initialPosition} enablePan />
                 <ambientLight />
-                {computers.map((v) => {
-                    return <ComputerBox key={v.id} computer={v} />;
-                })}
+                {blocks.map((v) => (
+                    <BlockBox key={vectorToArray(v.position).toString() + v.name} block={v} />
+                ))}
+                {computers.map((v) => (
+                    <ComputerBox key={v.id} computer={v} />
+                ))}
             </Canvas>
         </Container>
     );

@@ -11,7 +11,7 @@ import MovemementWheel from "./Turtle/MovemementWheel";
 
 type Tab = "devices" | "3d";
 const ComputerListing: FC<{ conn: WsConnection }> = ({ conn }) => {
-    const { computers } = useComputerInfo(conn);
+    const { computers, blocks } = useComputerInfo(conn);
     const onPingAll = () => {
         conn.broadcastPacket({ type: "request:heartbeat" });
     };
@@ -31,7 +31,7 @@ const ComputerListing: FC<{ conn: WsConnection }> = ({ conn }) => {
             <div className="flex flex-col gap-4 max-w-128 w-full">
                 {tab === "3d" && (
                     <>
-                        <ComputerCanvas computers={computers} />
+                        <ComputerCanvas computers={computers} blocks={blocks} />
 
                         {computers
                             .filter((v) => v.type === "turtle")
@@ -52,7 +52,8 @@ const ComputerListing: FC<{ conn: WsConnection }> = ({ conn }) => {
                 )}
                 {tab === "devices" && (
                     <>
-                        <div className="flex justify-end w-full">
+                        <div className="flex justify-end items-center gap-4 w-full">
+                            <span className="font-minecraft">Blocks {blocks.length}</span>
                             <Button onClick={onPingAll}>Refresh All</Button>
                         </div>
                         {computers.map((computer) => (

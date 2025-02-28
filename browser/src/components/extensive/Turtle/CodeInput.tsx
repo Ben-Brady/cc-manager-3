@@ -1,9 +1,9 @@
 import { FC, useRef, useState } from "react";
 
-import { TurtleActions } from "@/lib/devices/turtle";
 import Button from "@/components/elements/Button";
+import { TurtleActions } from "@/lib/devices/turtle";
 
-const UserCodeRun: FC<{ actions: TurtleActions }> = ({ actions }) => {
+const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const [output, setOutput] = useState<string | undefined>(undefined);
     const [runningUserCode, setRunning] = useState<boolean>(false);
@@ -15,17 +15,23 @@ const UserCodeRun: FC<{ actions: TurtleActions }> = ({ actions }) => {
         const code = element.value;
 
         setRunning(true);
-        const r = await actions.eval(["inventory", "movement"], code);
+        const r = await actions.eval(["movement"], code);
         await actions.heartbeat();
         setRunning(false);
 
-        const value = r.value;
-        setOutput(value);
+        let value = JSON.parse(r.value);
+        let repr: string;
+        if (typeof value === "undefined") repr = "No Value";
+        else if (typeof value === "string") repr = value;
+        else repr = r.value;
+
+        setOutput((output) => output + "\n" + repr);
     };
 
     const onClear = () => {
         const element = inputRef.current;
         if (!element) return;
+        setOutput("");
         element.value = "";
     };
 
@@ -48,9 +54,12 @@ const UserCodeRun: FC<{ actions: TurtleActions }> = ({ actions }) => {
                 <Button onClick={onClear} disabled={runningUserCode}>
                     Clear
                 </Button>
+                <Button onClick={() => setOutput("")} disabled={runningUserCode}>
+                    Clear Output
+                </Button>
             </div>
         </div>
     );
 };
 
-export default UserCodeRun;
+export default CodeInput;

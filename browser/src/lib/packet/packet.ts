@@ -24,7 +24,7 @@ export const RequestBody = z.lazy(() =>
 export type RequestBody = z.infer<typeof RequestBody>;
 
 export const ResponseBody = z.lazy(() =>
-    z.union([HeartbeatResponse, EvalResponse, BlockDetectionResponse, RotationResponse]),
+    z.union([HeartbeatResponse, EvalResponse, BlockDetectionResponse, RotationResponse, PositionResponse]),
 );
 export type ResponseBody = z.infer<typeof ResponseBody>;
 

@@ -76,6 +76,8 @@ const onTakeover = (element: HTMLElement, actions: TurtleActions) => {
     document.addEventListener(
         "keydown",
         ({ key }) => {
+            if (key === "Escape") return;
+
             if (key === "ArrowUp") isUpPressed = true;
             if (key === "ArrowDown") isDownPressed = true;
 

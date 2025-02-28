@@ -1,8 +1,9 @@
 import { FC } from "react";
 
+import Container from "@/components/elements/Container";
 import { TurtleActions } from "@/lib/devices/turtle";
 import { TurtleInfo } from "@/lib/devices/types";
-import Container from "@/components/elements/Container";
+
 import InventoryGrid from "../Inventory/InventoryGrid";
 
 export const InventoryDisplay: FC<{ turtle: TurtleInfo; actions: TurtleActions }> = ({
