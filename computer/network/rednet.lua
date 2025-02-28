@@ -23,5 +23,4 @@ function exports.getNextPacket()
     return body
 end
 
-print(exports)
 return exports

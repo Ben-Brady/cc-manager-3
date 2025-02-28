@@ -10,6 +10,6 @@ return function()
 
     network.broadcastPacket({
         type = "response:rotation",
-        facing = rotation.rotation,
+        facing = facing,
     })
 end

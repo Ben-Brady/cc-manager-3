@@ -1,7 +1,8 @@
 local threads = require "threads"
 local network = require "network"
 local loop = require "loop"
-require "monkeypatch"
+require "monkeypatch.direction"
+require "monkeypatch.scan"
 require "monitor"
 
 network.setup()

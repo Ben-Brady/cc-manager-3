@@ -1,4 +1,8 @@
-local ws = require "network.ws"
-local rednet = require "network.rednet"
+local modem = peripheral.find("modem")
 
-return rednet
+return require "network.ws"
+-- if modem == nil then
+--     return require "network.ws"
+-- else
+--     return require "network.rednet"
+-- end

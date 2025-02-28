@@ -35,6 +35,7 @@
 
 ---@class BlockDetectionResponse
 ---@field type "response:block-detection"
+---@field position Vec3
 ---@field direction "up" | "down" | "front"
 ---@field block string
 
@@ -44,6 +45,10 @@
 ---@class RotationResponse
 ---@field type "response:rotation"
 ---@field facing "east" | "west" | "north" | "south"
+
+---@class PositionResponse
+---@field type "response:rotation"
+---@field position Vec3
 
 ---@class HeartbeatRequest
 ---@field type "request:heartbeat"
