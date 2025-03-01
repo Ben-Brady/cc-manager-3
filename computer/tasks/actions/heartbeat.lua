@@ -1,6 +1,7 @@
 local network   = require "network"
 local device    = require "device"
 local inventory = require "turtle.inventory"
+local location  = require "location"
 
 local start     = os.epoch("utc")
 return function()
@@ -12,11 +13,7 @@ return function()
     local label = os.getComputerLabel()
     local usedLocks = locks.getUsedLocks()
 
-    local position = nil
-    local x, y, z = gps.locate(0.1, false)
-    if x ~= nil then
-        position = { x = x, y = y, z = z }
-    end
+    local position = location.getPosition()
 
     local deviceType = device.getDeviceType()
     local deviceData = { type = deviceType }

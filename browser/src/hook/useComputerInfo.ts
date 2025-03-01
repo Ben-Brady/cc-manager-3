@@ -28,13 +28,22 @@ export const useComputerInfo = (conn: WsConnection) => {
         const controller = new AbortController();
         const signal = controller.signal;
 
-        conn.listenFor("response:block-detection", signal, (body, sender) => {
+        conn.listenFor("response:block-detection", signal, (body) => {
+            setBlocks((blocks) => {
+                const newBlocks = applyBlockDetection(blocks, body);
+                return newBlocks ?? blocks;
+            });
+            return computers;
+        });
+
+        conn.listenFor("response:position", signal, (body, sender) => {
             setComputers((computers) => {
-                setBlocks((blocks) => {
-                    const newBlocks = applyBlockDetection(computers, blocks, body, sender);
-                    return newBlocks ?? blocks;
-                });
-                return computers;
+                const computer = computers[sender];
+                if (!computer) return computers;
+                return {
+                    ...computers,
+                    [sender]: { ...computer, position: body.position },
+                };
             });
         });
 
@@ -62,8 +71,11 @@ export const useComputerInfo = (conn: WsConnection) => {
         return () => controller.abort();
     }, [conn]);
 
-    console.log({ blocks });
     const computerList = useMemo(() => Object.values(computers), [computers]);
+    console.log({
+        computers: computerList,
+        blocks: blocks,
+    });
     return {
         computers: computerList,
         blocks: blocks,
@@ -114,34 +126,14 @@ const applyHeartbeat = (computer: ComputerInfo, body: HeartbeatResponse): Comput
 };
 
 const applyBlockDetection = (
-    computers: Record<number, ComputerInfo>,
     blocks: Block[],
     body: BlockDetectionResponse,
-    sender: number,
 ): Block[] | undefined => {
-    const { direction, block: name } = body;
-    const turtle = computers[sender];
-    if (turtle?.type !== "turtle") return;
-    if (!turtle.position) return;
+    const { block: name, position } = body;
 
-    // We need to know the rotation in order to detect blocks in front
-    if (direction === "front" && !turtle.facing) return;
-
-    const blockPos = (() => {
-        const pos = turtle.position;
-        if (direction === "up") return { ...pos, y: pos.y + 1 };
-        if (direction === "down") return { ...pos, y: pos.y - 1 };
-
-        if (turtle.facing === "north") return { ...pos, z: pos.z - 1 };
-        if (turtle.facing === "south") return { ...pos, z: pos.z + 1 };
-        if (turtle.facing === "east") return { ...pos, x: pos.x + 1 };
-        if (turtle.facing === "west") return { ...pos, x: pos.x - 1 };
-    })();
-
-    if (!blockPos) return;
     const block: Block = {
-        position: blockPos,
         name: name,
+        position: position,
     };
     const filteredBlocks = blocks.filter((v) => !isEqual(v.position, block.position));
     return [...filteredBlocks, block];

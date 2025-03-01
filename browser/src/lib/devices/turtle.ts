@@ -44,15 +44,17 @@ export type TurtleActions = {
 export const createTurtleActions = (conn: WsConnection, computerId: number): TurtleActions => {
     const sendPacket = (packet: RequestBody) => conn.sendPacket(computerId, packet);
 
-    const runCode = async (locks: LockType[], code: string) => {
+    const runCode = async (locks: LockType[], heartbeat: boolean, code: string) => {
         await sendEval(conn, computerId, { code, locks });
-        await sendHeartbeat(conn, computerId, {});
+        if (heartbeat) {
+            await sendHeartbeat(conn, computerId, {});
+        }
     };
 
     return {
         restart: () => sendPacket({ type: "request:restart" }),
         calibrateRotation: () => sendPacket({ type: "request:rotation" }),
-        scan: () => runCode([], "turtle.inspect() turtle.inspectDown() turtle.inspectUp()"),
+        scan: () => runCode([], false, "turtle.inspect() turtle.inspectDown() turtle.inspectUp()"),
 
         eval: async (locks, code) => {
             const data = await sendEval(conn, computerId, { locks, code });
@@ -60,29 +62,29 @@ export const createTurtleActions = (conn: WsConnection, computerId: number): Tur
         },
         heartbeat: () => sendHeartbeat(conn, computerId, {}),
 
-        goForward: () => runCode(["movement"], "turtle.forward()"),
-        goBack: () => runCode(["movement"], "turtle.back()"),
-        goUp: () => runCode(["movement"], "turtle.up()"),
-        goDown: () => runCode(["movement"], "turtle.down()"),
-        turnLeft: () => runCode(["movement"], "turtle.turnLeft()"),
-        turnRight: () => runCode(["movement"], "turtle.turnRight()"),
+        goForward: () => runCode(["movement"], false, "turtle.forward()"),
+        goBack: () => runCode(["movement"], false, "turtle.back()"),
+        goUp: () => runCode(["movement"], false, "turtle.up()"),
+        goDown: () => runCode(["movement"], false, "turtle.down()"),
+        turnLeft: () => runCode(["movement"], false, "turtle.turnLeft()"),
+        turnRight: () => runCode(["movement"], false, "turtle.turnRight()"),
 
-        digFront: () => runCode([], "turtle.dig()"),
-        digUp: () => runCode([], "turtle.digUp()"),
-        digDown: () => runCode([], "turtle.digDown()"),
-        placeFront: () => runCode([], "turtle.place()"),
-        placeUp: () => runCode([], "turtle.placeUp()"),
-        placeDown: () => runCode([], "turtle.placeDown()"),
-        dropFront: () => runCode([], "turtle.drop()"),
-        dropUp: () => runCode([], "turtle.dropUp()"),
-        dropDown: () => runCode([], "turtle.dropDown()"),
-        suckFront: () => runCode([], "turtle.suck()"),
-        suckUp: () => runCode([], "turtle.suckUp()"),
-        suckDown: () => runCode([], "turtle.suckDown()"),
-        inspectFront: () => runCode([], "turtle.inspect()"),
-        inspectUp: () => runCode([], "turtle.inspectUp()"),
-        inspectDown: () => runCode([], "turtle.inspectDown()"),
+        digFront: () => runCode([], true, "turtle.dig()"),
+        digUp: () => runCode([], true, "turtle.digUp()"),
+        digDown: () => runCode([], true, "turtle.digDown()"),
+        placeFront: () => runCode([], true, "turtle.place()"),
+        placeUp: () => runCode([], true, "turtle.placeUp()"),
+        placeDown: () => runCode([], true, "turtle.placeDown()"),
+        dropFront: () => runCode([], true, "turtle.drop()"),
+        dropUp: () => runCode([], true, "turtle.dropUp()"),
+        dropDown: () => runCode([], true, "turtle.dropDown()"),
+        suckFront: () => runCode([], true, "turtle.suck()"),
+        suckUp: () => runCode([], true, "turtle.suckUp()"),
+        suckDown: () => runCode([], true, "turtle.suckDown()"),
+        inspectFront: () => runCode([], true, "turtle.inspect()"),
+        inspectUp: () => runCode([], true, "turtle.inspectUp()"),
+        inspectDown: () => runCode([], true, "turtle.inspectDown()"),
 
-        select: (slot: number) => runCode(["inventory"], `turtle.select(${slot + 1})`),
+        select: (slot: number) => runCode(["inventory"], true, `turtle.select(${slot + 1})`),
     };
 };

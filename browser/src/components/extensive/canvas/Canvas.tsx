@@ -5,71 +5,32 @@ import * as THREE from "three";
 
 import Container from "@/components/elements/Container";
 import { Block } from "@/hook/useComputerInfo";
+import { ComputerInfo, TurtleInfo } from "@/lib/devices/types";
 import { Vec3 } from "@/lib/packet";
-import { ComputerInfo } from "@/lib/types";
 
-const ComputerBox: FC<{ computer: ComputerInfo }> = ({ computer }) => {
-    const { position } = computer;
-    if (!position) return null;
-
-    const color = (() => {
-        if (computer.type === "computer") return "#37ffa1";
-        if (computer.type === "turtle") return "#ff9837";
-        if (computer.type === "pocket") return "#ff37e4";
-    })();
-
-    return (
-        <mesh position={vectorToArray(position)} scale={1}>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color={color} />
-        </mesh>
-    );
-};
-
-const BlockBox: FC<{ block: Block }> = ({ block }) => {
-    const color = "#37b6ff";
-    if (block.name === "minecraft:air") return null;
-
-    return (
-        <mesh position={vectorToArray(block.position)} scale={1}>
-            <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color={color} opacity={0.6} />
-        </mesh>
-    );
-};
+import BlockBox from "./BlockBox";
+import ComputerBox from "./ComputerBox";
 
 const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
     computers,
     blocks,
 }) => {
     const turtle = computers.find((v) => v.type === "turtle");
-    const [initialPosition, setInitialPosition] = useState<THREE.Vector3 | undefined>();
+    const camera = useTurtleCamera(turtle);
 
-    useEffect(() => {
-        setInitialPosition((pos) => {
-            if (pos) return pos;
-            if (turtle?.position) {
-                const pos = vectorToArray(turtle.position);
-                pos[1] += 10;
-                return new THREE.Vector3(...pos);
-            }
-        });
-    }, [computers]);
+    if (!turtle || !camera) return null;
 
     return (
         <Container className="!p-0 w-full h-96">
             <Canvas
                 camera={{
-                    position: !initialPosition
-                        ? undefined
-                        : new THREE.Vector3(
-                              initialPosition.x,
-                              initialPosition.y + 10,
-                              initialPosition.z,
-                          ),
+                    position: camera.position,
+                    rotateY: camera.rotation,
                 }}
             >
-                <OrbitControls target={initialPosition} enablePan />
+                {turtle?.position && (
+                    <OrbitControls target={vectorToArray(turtle.position)} enablePan />
+                )}
                 <ambientLight />
                 {blocks.map((v) => (
                     <BlockBox key={vectorToArray(v.position).toString() + v.name} block={v} />
@@ -82,5 +43,36 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
     );
 };
 
-const vectorToArray = (vector: Vec3): [number, number, number] => [vector.x, vector.y, vector.z];
+const useTurtleCamera = (
+    turtle: TurtleInfo | undefined,
+): undefined | { position: THREE.Vector3; rotation: number } => {
+    if (!turtle) return undefined;
+
+    const { facing, position } = turtle;
+    if (!facing || !position) return undefined;
+
+    const rotation =
+        facing === "north" ? 0 : facing === "east" ? 0.25 : facing === "south" ? 0.5 : 0.75;
+    const VERTICAL_OFFSET = 3;
+    const HORIZONTAL_OFFSET = 3;
+
+    let { x, y, z } = position;
+    y += VERTICAL_OFFSET;
+
+    if (facing === "west") x += HORIZONTAL_OFFSET;
+    if (facing === "east") x -= HORIZONTAL_OFFSET;
+    if (facing === "north") z += HORIZONTAL_OFFSET;
+    if (facing === "south") z -= HORIZONTAL_OFFSET;
+    return {
+        position: new THREE.Vector3(x, y, z),
+        rotation,
+    };
+};
+
+export const vectorToArray = (vector: Vec3): [number, number, number] => [
+    vector.x,
+    vector.y,
+    vector.z,
+];
+
 export default ComputerCanvas;

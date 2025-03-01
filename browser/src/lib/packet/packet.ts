@@ -5,6 +5,7 @@ import { EvalRequest, EvalResponse } from "./actions/eval";
 import { HeartbeatRequest, HeartbeatResponse } from "./actions/heartbeat";
 import { RestartRequest } from "./actions/restart";
 import { RotationRequest, RotationResponse } from "./actions/rotation";
+import { PositionResponse } from "./actions/position";
 
 export const RequestPacket = z.object({
     destination: z.union([z.literal("*"), z.number()]),

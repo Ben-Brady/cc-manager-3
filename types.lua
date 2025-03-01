@@ -19,6 +19,7 @@
 --- | EvalResponse
 --- | BlockDetectionResponse
 --- | RotationResponse
+--- | PositionResponse
 
 ---@class RestartRequest
 ---@field type "request:restart"
@@ -36,7 +37,6 @@
 ---@class BlockDetectionResponse
 ---@field type "response:block-detection"
 ---@field position Vec3
----@field direction "up" | "down" | "front"
 ---@field block string
 
 ---@class RotationRequest
@@ -47,7 +47,7 @@
 ---@field facing "east" | "west" | "north" | "south"
 
 ---@class PositionResponse
----@field type "response:rotation"
+---@field type "response:position"
 ---@field position Vec3
 
 ---@class HeartbeatRequest

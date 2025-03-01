@@ -4,9 +4,10 @@ local rotation = require "rotation"
 local exports = {}
 ---@param action function
 ---@param direction "left" | "right"
-function exports.wrapTurnWithReport(action, direction)
+function exports.withRotationUpdate(action, direction)
     return function()
         action()
+
         if direction == "right" then
             rotation.recordTurnRight()
         else
@@ -23,7 +24,7 @@ function exports.wrapTurnWithReport(action, direction)
     end
 end
 
-function exports.wrapMoveWithCalibration(move)
+function exports.withRotationCalibration(move)
     return function()
         local hasRotation = rotation.getRotation() ~= nil
         if hasRotation then return move() end

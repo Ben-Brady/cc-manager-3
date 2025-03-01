@@ -12,6 +12,7 @@ export const Item = z.object({
 });
 export type Item = z.infer<typeof Item>;
 
+
 export const ItemSlot = Item.nullable();
 export type ItemSlot = z.infer<typeof ItemSlot>;
 

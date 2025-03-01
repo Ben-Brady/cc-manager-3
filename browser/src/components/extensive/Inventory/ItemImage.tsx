@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { FC } from "react";
 
-import { getImageSrc } from "@/lib/item";
+import { getItemTexture } from "@/lib/item";
 
 type ItemImageProps = {
     name: string;
@@ -11,7 +11,7 @@ type ItemImageProps = {
 const ItemImage: FC<ItemImageProps> = ({ name, className }) => {
     const { data } = useQuery({
         queryKey: ["item-src", name],
-        queryFn: () => getImageSrc(name),
+        queryFn: () => getItemTexture(name),
     });
 
     if (data === undefined) return undefined;

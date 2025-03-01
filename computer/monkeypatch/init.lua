@@ -2,17 +2,35 @@ local direction = require "monkeypatch.direction"
 local scan = require "monkeypatch.scan"
 local position = require "monkeypatch.position"
 
-turtle.turnRight = direction.wrapTurnWithReport(turtle.turnRight, "right")
-turtle.turnLeft = direction.wrapTurnWithReport(turtle.turnLeft, "left")
-turtle.forward = direction.wrapMoveWithCalibration(turtle.forward)
-turtle.back = direction.wrapMoveWithCalibration(turtle.back)
+return {
+    patch = function()
+        turtle.inspect = scan.withInspectReport(turtle.inspect, "front")
+        turtle.inspectUp = scan.withInspectReport(turtle.inspectUp, "up")
+        turtle.inspectDown = scan.withInspectReport(turtle.inspectDown, "down")
 
-turtle.inspect = scan.wrapInspectWithScan(turtle.inspect, "front")
-turtle.inspectUp = scan.wrapInspectWithScan(turtle.inspectUp, "up")
-turtle.inspectDown = scan.wrapInspectWithScan(turtle.inspectDown, "down")
+        -- 2nd Executed
+        turtle.turnLeft = scan.withTurnScan(turtle.turnLeft)
+        turtle.turnRight = scan.withTurnScan(turtle.turnRight)
 
-turtle.forward = scan.wrapMovementWithScan(turtle.forward)
-turtle.back = scan.wrapMovementWithScan(turtle.back)
-turtle.up = scan.wrapMovementWithScan(turtle.up)
-turtle.down = scan.wrapMovementWithScan(turtle.down)
+        -- 1st Executed
+        turtle.turnLeft = direction.withRotationUpdate(turtle.turnLeft, "left")
+        turtle.turnRight = direction.withRotationUpdate(turtle.turnRight, "right")
 
+
+        -- 3rd Executed
+        turtle.forward = scan.withMovementScan(turtle.forward)
+        turtle.back = scan.withMovementScan(turtle.back)
+        turtle.up = scan.withMovementScan(turtle.up)
+        turtle.down = scan.withMovementScan(turtle.down)
+
+        -- 2nd Executed
+        turtle.forward = position.withPositionUpdate(turtle.forward, "forward")
+        turtle.back = position.withPositionUpdate(turtle.back, "back")
+        turtle.up = position.withPositionUpdate(turtle.up, "up")
+        turtle.down = position.withPositionUpdate(turtle.down, "down")
+
+        -- 1st Executed
+        turtle.forward = direction.withRotationCalibration(turtle.forward)
+        turtle.back = direction.withRotationCalibration(turtle.back)
+    end
+}

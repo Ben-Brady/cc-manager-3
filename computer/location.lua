@@ -13,12 +13,17 @@ end
 
 ---@return Vec3|nil
 function exports.getPosition()
+    -- if position == nil then
+    --     exports.updateFromGPS()
+    -- end
+    exports.updateFromGPS()
     return position
 end
 
 function exports.updateFromGPS()
     if not exports.hasGPS then return end
-    return position
+    local x, y, z = gps.locate(0.5, false)
+    position = { x = x, y = y, z = z }
 end
 
 ---@param offset Vec3

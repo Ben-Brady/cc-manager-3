@@ -14,18 +14,19 @@ const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
 
         const code = element.value;
 
+        setOutput("");
         setRunning(true);
         const r = await actions.eval(["movement"], code);
         await actions.heartbeat();
         setRunning(false);
 
-        let value = JSON.parse(r.value);
+        let value = r.value ? JSON.parse(r.value) : undefined;
         let repr: string;
-        if (typeof value === "undefined") repr = "No Value";
+        if (typeof value === "undefined") repr = "nil";
         else if (typeof value === "string") repr = value;
         else repr = r.value;
 
-        setOutput((output) => output + "\n" + repr);
+        setOutput((output) => repr);
     };
 
     const onClear = () => {
@@ -44,6 +45,7 @@ const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
             {output && (
                 <textarea
                     value={output}
+                    readOnly
                     className="resize-none w-full h-min font-minecraft overflow-auto bg-black-700 bg-mgray text-gray-100 border-none outline-none p-1"
                 />
             )}
