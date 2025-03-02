@@ -8,15 +8,10 @@ import { vectorToArray } from "./Canvas";
 const BlockBox: FC<{
     block: Block;
     texture: string | null | undefined;
-    requestTexture: (name: string) => void;
     onCreateTooltip: (x: number, y: number) => void;
     onCloseTooltip: () => void;
-}> = ({ block, texture, requestTexture, onCreateTooltip, onCloseTooltip }) => {
+}> = ({ block, texture, onCreateTooltip, onCloseTooltip }) => {
     if (block.name === "minecraft:air") return null;
-
-    useEffect(() => {
-        if (texture === undefined) requestTexture(block.name);
-    }, [texture]);
 
     const base = useMemo(
         () => (texture ? new THREE.TextureLoader().load(texture) : undefined),

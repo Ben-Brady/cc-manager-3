@@ -1,6 +1,6 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { FC, useCallback, useRef, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { FC, useEffect, useState } from "react";
 import * as THREE from "three";
 
 import Container from "@/components/elements/Container";
@@ -10,7 +10,7 @@ import { getBlockTexture } from "@/lib/item";
 import { Vec3 } from "@/lib/packet";
 
 import BlockBox from "./BlockBox";
-import ComputerBox from "./ComputerBox";
+import TurtleBox from "./ComputerBox";
 
 type Tooltip = {
     x: number;
@@ -27,13 +27,17 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
     const [tooltip, setTooltip] = useState<Tooltip | undefined>(undefined);
     const [textures, setTextures] = useState<Record<string, string | null>>({});
 
-    const onRequestTexture = useCallback(async (name: string) => {
-        const texture = await getBlockTexture(name);
-        setTextures((textures) => ({
-            ...textures,
-            [name]: texture,
-        }));
-    }, []);
+    useEffect(() => {
+        blocks.forEach(({ name }) => {
+            (async () => {
+                const texture = await getBlockTexture(name);
+                setTextures((textures) => ({
+                    ...textures,
+                    [name]: texture,
+                }));
+            })();
+        });
+    }, [blocks]);
 
     return (
         <Container className="!p-0 w-full h-96 relative">
@@ -46,33 +50,41 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
                 </Container>
             )}
             <Canvas camera={camera}>
-                <OrbitControls
-                    target={!turtle?.position ? undefined : vectorToArray(turtle.position)}
-                    enablePan
-                />
+                <CameraControls blocks={blocks} turtle={turtle} />
                 <ambientLight />
                 {blocks.map((block) => (
                     <BlockBox
                         key={vectorToArray(block.position).toString() + block.name}
                         block={block}
                         texture={textures[block.name]}
-                        requestTexture={onRequestTexture}
                         onCreateTooltip={(x, y) => setTooltip({ text: block.name, x, y })}
                         onCloseTooltip={() => setTooltip(undefined)}
                     />
                 ))}
-                {computers.map((v) => (
-                    <ComputerBox key={v.id} computer={v} />
-                ))}
+                {computers
+                    .filter((v) => v.type === "turtle")
+                    .map((v) => (
+                        <TurtleBox key={v.id} turtle={v} />
+                    ))}
             </Canvas>
         </Container>
+    );
+};
+
+const CameraControls: FC<{ blocks: Block[]; turtle: TurtleInfo | undefined }> = ({ turtle }) => {
+    return (
+        <OrbitControls
+            maxDistance={5}
+            target={!turtle?.position ? undefined : vectorToArray(turtle.position)}
+            enablePan
+        />
     );
 };
 
 const calcCamera = (
     turtle: TurtleInfo | undefined,
     blocks: Block[],
-): { position: THREE.Vector3; rotateY: number } => {
+): { position: THREE.Vector3; rotation: THREE.Euler } => {
     const position = turtle?.position;
     const facing = turtle?.facing;
 
@@ -87,11 +99,16 @@ const calcCamera = (
             z += block.position.z;
         }
 
-        return { position: new THREE.Vector3(x, y, z), rotateY: 0 };
+        return { position: new THREE.Vector3(x, y, z), rotation: new THREE.Euler() };
     }
 
-    const rotation =
-        facing === "north" ? 0 : facing === "east" ? 0.25 : facing === "south" ? 0.5 : 0.75;
+    const rotation = new THREE.Euler();
+    const quaterTurn = -(Math.PI / 2);
+    if (facing === "north") rotation.y = 0.25;
+    if (facing === "east") rotation.y = 0.5;
+    if (facing === "south") rotation.y = 0.75;
+    if (facing === "west") rotation.y = 1;
+
     const VERTICAL_OFFSET = 3;
     const HORIZONTAL_OFFSET = 3;
 
@@ -104,7 +121,7 @@ const calcCamera = (
     if (facing === "south") z -= HORIZONTAL_OFFSET;
     return {
         position: new THREE.Vector3(x, y, z),
-        rotateY: rotation,
+        rotation: rotation,
     };
 };
 

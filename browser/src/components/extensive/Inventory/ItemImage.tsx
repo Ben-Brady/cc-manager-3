@@ -15,7 +15,7 @@ const ItemImage: FC<ItemImageProps> = ({ name, className }) => {
     });
 
     if (data === undefined) return undefined;
-    return <img title={name} src={data ?? "/missing.png"} className={className} />;
+    return <img title={name} src={data ?? "/missing.png"} className={className + " pixelated"} />;
 };
 
 export default ItemImage;

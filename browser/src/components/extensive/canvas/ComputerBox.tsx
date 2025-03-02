@@ -1,7 +1,10 @@
-import { FC } from "react";
+import { useFrame } from "@react-three/fiber";
+import { FC, useEffect, useRef } from "react";
 import * as THREE from "three";
 
-import { ComputerInfo } from "@/lib/devices/types";
+import { TurtleInfo } from "@/lib/devices/types";
+import { Vec3 } from "@/lib/packet";
+import { Rotation } from "@/lib/packet/generic";
 
 import {
     TURTLE_BACK_URL,
@@ -11,7 +14,6 @@ import {
     TURTLE_RIGHT_URL,
     TURTLE_TOP_URL,
 } from "./assets";
-import { vectorToArray } from "./Canvas";
 
 const loader = new THREE.TextureLoader();
 
@@ -32,21 +34,56 @@ const TURTLE_LEFT_TEXTURE = loadTexture(TURTLE_LEFT_URL);
 const TURTLE_RIGHT_TEXTURE = loadTexture(TURTLE_RIGHT_URL);
 const TURTLE_TOP_TEXTURE = loadTexture(TURTLE_TOP_URL);
 
-const ComputerBox: FC<{ computer: ComputerInfo }> = ({ computer }) => {
-    const { position } = computer;
+const lerp = (current: number, target: number, speed: number) => {
+    const step = target - current;
+    return current + step / (1 / speed);
+};
+
+const TurtleBox: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
+    const meshRef = useRef<THREE.Mesh>(null);
+    const targetPositionRef = useRef<Vec3>(turtle.position);
+    const targetRotationRef = useRef<THREE.Euler>(undefined);
+
+    useFrame((_, delta) => {
+        const mesh = meshRef.current;
+        if (!mesh) return;
+
+        const targetPos = targetPositionRef.current;
+        if (targetPos) {
+            const isInitialPosiiton =
+                mesh.position.x === 0 && mesh.position.y === 0 && mesh.position.x === 0;
+
+            if (isInitialPosiiton) {
+                mesh.position.x = targetPos.x;
+                mesh.position.y = targetPos.y;
+                mesh.position.z = targetPos.z;
+                return;
+            }
+
+            mesh.position.x = lerp(mesh.position.x, targetPos.x, delta * 10);
+            mesh.position.y = lerp(mesh.position.y, targetPos.y, delta * 10);
+            mesh.position.z = lerp(mesh.position.z, targetPos.z, delta * 10);
+        }
+
+        const targetRot = targetRotationRef.current;
+        if (targetRot) {
+            mesh.rotation.y = lerp(mesh.rotation.y, targetRot.y, delta * 10);
+        }
+    });
+
+    useEffect(() => {
+        let position = turtle.position;
+        if (position) targetPositionRef.current = position;
+
+        let rotation = calcRotation(turtle.facing);
+        if (rotation) targetRotationRef.current = rotation;
+    }, [turtle]);
+
+    const { position } = turtle;
     if (!position) return null;
 
-    const rotation = new THREE.Euler();
-    const quaterTurn = -(Math.PI / 2);
-    if (computer.type === "turtle" && computer.facing) {
-        if (computer.facing === "north") rotation.y = quaterTurn * -1;
-        if (computer.facing === "east") rotation.y = quaterTurn * 0;
-        if (computer.facing === "south") rotation.y = quaterTurn * 1;
-        if (computer.facing === "west") rotation.y = quaterTurn * 2;
-    }
-
     return (
-        <mesh position={vectorToArray(position)} scale={0.8} rotation={rotation}>
+        <mesh ref={meshRef} scale={0.8}>
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial map={TURTLE_LEFT_TEXTURE} attach="material-5" />
             <meshStandardMaterial map={TURTLE_BOTTOM_TEXTURE} attach="material-3" />
@@ -58,4 +95,14 @@ const ComputerBox: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     );
 };
 
-export default ComputerBox;
+const QUARTER_TURN = -(Math.PI / 2);
+const calcRotation = (facing: undefined | Rotation): THREE.Euler => {
+    const rotation = new THREE.Euler();
+    if (facing === "north") rotation.y = QUARTER_TURN * -1;
+    if (facing === "east") rotation.y = QUARTER_TURN * 0;
+    if (facing === "south") rotation.y = QUARTER_TURN * 1;
+    if (facing === "west") rotation.y = QUARTER_TURN * 2;
+    return rotation;
+};
+
+export default TurtleBox;

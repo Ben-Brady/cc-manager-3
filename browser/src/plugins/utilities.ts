@@ -42,7 +42,6 @@ export const utilityPlugin = () =>
 
         addUtilities({
             ".pixelated": {
-                "content-visibility": "auto",
                 "image-rendering": "pixelated",
             },
         });

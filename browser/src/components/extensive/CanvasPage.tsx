@@ -2,13 +2,13 @@ import { FC } from "react";
 
 import Container from "@/components/elements/Container";
 import ComputerCanvas from "@/components/extensive/canvas/Canvas";
+import { useConnectionContext } from "@/context/ConnectionProvider";
 import { createTurtleActions } from "@/lib/devices/turtle";
 import { TurtleInfo } from "@/lib/devices/types";
 import { WsConnection } from "@/lib/ws/connection";
 
 import { InventoryDisplay } from "./Turtle/InventoryDisplay";
 import TurtleActionController from "./Turtle/TurtleActionController";
-import { useConnectionContext } from "@/context/ConnectionProvider";
 
 const CanvasPage: FC = () => {
     const { conn, blocks, computers } = useConnectionContext();
@@ -20,7 +20,7 @@ const CanvasPage: FC = () => {
             {computers
                 .filter((v) => v.type === "turtle")
                 .map((turtle) => (
-                    <CanvasControls conn={conn} turtle={turtle} />
+                    <CanvasControls key={turtle.id} conn={conn} turtle={turtle} />
                 ))}
         </div>
     );
@@ -30,7 +30,7 @@ const CanvasControls: FC<{ conn: WsConnection; turtle: TurtleInfo }> = ({ conn, 
     const actions = createTurtleActions(conn, turtle.id);
 
     return (
-        <Container key={turtle.id} className="flex flex-col items-center w-fit">
+        <Container className="flex flex-col items-center w-fit">
             <span className="font-minecraft capitalize">
                 {turtle.label ?? `Computer ${turtle.id}`}
             </span>

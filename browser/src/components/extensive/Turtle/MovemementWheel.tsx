@@ -75,36 +75,37 @@ const onTakeover = (element: HTMLElement, actions: TurtleActions) => {
 
     document.addEventListener(
         "keydown",
-        ({ key }) => {
-            if (key === "Escape") return;
+        (e) => {
+            if (e.key === "Escape") return;
 
-            if (key === "ArrowUp") isUpPressed = true;
-            if (key === "ArrowDown") isDownPressed = true;
+            if (e.key === "ArrowUp") isUpPressed = true;
+            if (e.key === "ArrowDown") isDownPressed = true;
 
-            if (key === "s") actions.goBack();
-            if (key === "a") actions.turnLeft();
-            if (key === "d") actions.turnRight();
-            if (key === "w") actions.goForward();
-            if (key === " ") actions.goUp();
-            if (key === "Shift") actions.goDown();
+            if (e.key === "s") actions.goBack();
+            if (e.key === "a") actions.turnLeft();
+            if (e.key === "d") actions.turnRight();
+            if (e.key === "w") actions.goForward();
+            if (e.key === " ") actions.goUp();
+            if (e.key === "Shift") actions.goDown();
 
-            if (key === "c") {
+            if (e.key === "c") {
                 if (isUpPressed) actions.suckUp();
                 else if (isDownPressed) actions.suckUp();
                 else actions.suckFront();
             }
 
-            if (key === "g") {
+            if (e.key === "g") {
                 if (isUpPressed) actions.digUp();
                 else if (isDownPressed) actions.digDown();
                 else actions.digFront();
             }
 
-            if (key === "f") {
+            if (e.key === "f") {
                 if (isUpPressed) actions.placeUp();
                 else if (isDownPressed) actions.placeDown();
                 else actions.placeFront();
             }
+            e.stopPropagation();
         },
         { signal: controller.signal },
     );
