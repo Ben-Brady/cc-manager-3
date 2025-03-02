@@ -1,7 +1,10 @@
-import { ResponsePacket, type DeviceType, type ItemSlot, type Vector } from "./packet";
-import type { LockType, Rotation } from "./packet/generic";
+import { HeartbeatResponse, ResponsePacket, type DeviceType, type ItemSlot } from "./packet";
+import type { BlockDetectionResponse } from "./packet/actions/block";
+import type { PositionResponse } from "./packet/actions/position";
+import type { RotationResponse } from "./packet/actions/rotation";
+import type { LockType, Rotation, Vec3 } from "./packet/generic";
 import { computerMessageListeners } from "./websocket";
-
+import { writeFileSync, readFileSync, existsSync } from "fs";
 export type ComputerInfo = {
     id: number;
     type: DeviceType;
@@ -15,73 +18,95 @@ export type ComputerInfo = {
     leftHand?: ItemSlot;
     rightHand?: ItemSlot;
     label?: string;
-    position?: Vector;
+    position?: Vec3;
 };
 
 type Block = {
-    position: Vector;
+    position: Vec3;
     name: string;
+    lastDetected: number;
 };
-const devices = new Map<number, ComputerInfo>();
-const blocks = new Map<string, Block>();
 
-computerMessageListeners.set("memory", (data) => {
-    const { body, sender } = ResponsePacket.parse(JSON.parse(data));
+const deviceMap = new Map<number, ComputerInfo>();
+const blockMap = new Map<string, Block>();
 
-    if (body.type === "response:rotation") {
-        const device = devices.get(sender);
-        if (!device) return;
-        device.facing = body.facing;
-    }
+const BLOCK_FILE = "blocks.json";
+const createPosKey = (pos: Vec3) => `${pos.x}-${pos.y}-${pos.z}`;
 
-    if (body.type === "response:block-detection") {
-        const position = devices.get(sender)?.position;
-        const rotation = devices.get(sender)?.facing;
-        if (!position || !rotation) return;
-        let blockPos = (() => {
-            if (body.direction === "up") return { ...position, y: position.y + 1 };
-            if (body.direction === "down") return { ...position, y: position.y - 1 };
-            if (body.direction === "front") {
-                if (rotation === "east") return { ...position, x: position.x + 1 };
-                if (rotation === "west") return { ...position, x: position.x - 1 };
-                if (rotation === "north") return { ...position, z: position.z - 1 };
-                if (rotation === "south") return { ...position, z: position.z + 1 };
-            }
-            throw new Error("?");
-        })();
-
-        const key = `${blockPos.x}-${blockPos.y}-${blockPos.z}`;
-        blocks.set(key, {
-            position: blockPos,
-            name: body.block,
-        });
-    }
-
-    if (body.type === "response:heartbeat") {
-        const computer = devices.get(sender);
-        const selectedSlot =
-            body.deviceData.type === "turtle" ? body.deviceData.selectedSlot : undefined;
-
-        const device = {
-            ...computer,
-            ...body,
-            id: sender,
-            label: body.label,
-            lastUpdated: Date.now(),
-            uptime: Math.floor(body.uptime),
-            type: body.deviceData.type,
-            position: body.position ?? computer?.position,
-            selectedSlot: selectedSlot ?? computer?.selectedSlot,
-            locks: body.locks ?? computer?.locks,
-        } satisfies ComputerInfo;
-        devices.set(sender, device);
-    }
-});
+if (existsSync(BLOCK_FILE)) {
+    const json = readFileSync(BLOCK_FILE).toString("utf-8");
+    const blocks = JSON.parse(json) as Block[];
+    blocks.map((block) => {
+        const key = createPosKey(block.position);
+        blockMap.set(key, block);
+    });
+}
 
 export const getDevices = (): ComputerInfo[] => {
-    return Object.values(devices);
+    return Array.from(deviceMap.values());
 };
 
 export const getBlocks = (): Block[] => {
-    return Object.values(blocks);
+    return Array.from(blockMap.values());
+};
+
+computerMessageListeners.set(":memory:", (data) => {
+    const { body, sender } = ResponsePacket.parse(JSON.parse(data));
+
+    console.log("<-- " + body.type);
+    if (body.type === "update:block-detection") {
+        applyBlockDetection(body);
+    } else if (body.type === "update:rotation") {
+        applyRotationUpdate(body, sender);
+    } else if (body.type === "update:position") {
+        applyPositionUpdate(body, sender);
+    } else if (body.type === "response:heartbeat") {
+        applyHeartbeat(body, sender);
+    }
+});
+
+const applyBlockDetection = (body: BlockDetectionResponse) => {
+    const pos = body.position;
+
+    const key = `${pos.x}-${pos.y}-${pos.z}`;
+    blockMap.set(key, {
+        position: pos,
+        name: body.block,
+        lastDetected: Date.now(),
+    });
+    const blocks = Array.from(blockMap.values());
+    const json = JSON.stringify(blocks);
+    writeFileSync(BLOCK_FILE, json);
+};
+
+const applyHeartbeat = (body: HeartbeatResponse, sender: number) => {
+    const computer = deviceMap.get(sender);
+    const selectedSlot =
+        body.deviceData.type === "turtle" ? body.deviceData.selectedSlot : undefined;
+
+    const device = {
+        ...computer,
+        ...body,
+        id: sender,
+        label: body.label,
+        lastUpdated: Date.now(),
+        uptime: Math.floor(body.uptime),
+        type: body.deviceData.type,
+        position: body.position ?? computer?.position,
+        selectedSlot: selectedSlot ?? computer?.selectedSlot,
+        locks: body.locks ?? computer?.locks,
+    } satisfies ComputerInfo;
+    deviceMap.set(sender, device);
+};
+
+const applyRotationUpdate = (body: RotationResponse, sender: number) => {
+    const device = deviceMap.get(sender);
+    if (!device) return;
+    device.facing = body.facing;
+};
+
+const applyPositionUpdate = (body: PositionResponse, sender: number) => {
+    const device = deviceMap.get(sender);
+    if (!device) return;
+    device.position = body.position;
 };

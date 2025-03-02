@@ -20,6 +20,7 @@
 --- | BlockDetectionResponse
 --- | RotationResponse
 --- | PositionResponse
+--- | InventoryResponse
 
 ---@class RestartRequest
 ---@field type "request:restart"
@@ -35,20 +36,21 @@
 ---@field isError boolean
 
 ---@class BlockDetectionResponse
----@field type "response:block-detection"
+---@field type "update:block-detection"
 ---@field position Vec3
 ---@field block string
 
----@class RotationRequest
----@field type "request:rotation"
-
 ---@class RotationResponse
----@field type "response:rotation"
+---@field type "update:rotation"
 ---@field facing "east" | "west" | "north" | "south"
 
 ---@class PositionResponse
----@field type "response:position"
+---@field type "update:position"
 ---@field position Vec3
+
+---@class InventoryResponse
+---@field type "update:inventory"
+---@field inventory table<number, ItemSlot>
 
 ---@class HeartbeatRequest
 ---@field type "request:heartbeat"

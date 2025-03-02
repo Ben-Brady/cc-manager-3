@@ -1,7 +1,7 @@
-local heartbeat = require "tasks.actions.heartbeat"
-local restart = require "tasks.actions.restart"
-local eval = require "tasks.actions.eval"
-local rotation = require "tasks.actions.rotation"
+local heartbeat = require "actions.heartbeat"
+local restart = require "actions.restart"
+local eval = require "actions.eval"
+local rotation = require "actions.rotation"
 
 ---@class TaskInfo
 ---@field type ComputerTaskType
@@ -25,9 +25,4 @@ return {
         execute = eval,
         locks = {},
     },
-    {
-        type = "request:rotation",
-        execute = rotation,
-        locks = { "movement" },
-    }
 }

@@ -2,7 +2,7 @@ local network = require "network"
 local autoscan = require "autoscan"
 local rotation = require "rotation"
 local location = require "location"
-local heartbeat = require "tasks.actions.heartbeat"
+local heartbeat = require "actions.heartbeat"
 
 local exports = {}
 
@@ -40,7 +40,7 @@ function exports.withInspectReport(func, detectDirection)
         local blockPos = getPositionFromDirection(detectDirection)
         if blockPos then
             network.broadcastPacket({
-                type = "response:block-detection",
+                type = "update:block-detection",
                 position = blockPos,
                 block = block
             })
@@ -54,7 +54,7 @@ end
 function exports.withTurnScan(func)
     return function()
         local success = func()
-        turtle.inspect()
+        if autoscan.enabled then turtle.inspect() end
         return success
     end
 end
@@ -62,10 +62,30 @@ end
 function exports.withMovementScan(func)
     return function()
         local success = func()
-        if success and autoscan.enabled then
+        if autoscan.enabled then
             autoscan.scan()
         end
         return success
+    end
+end
+
+---@param func function
+---@param side "up" | "down" | "front"
+function exports.withDigUpdate(func, side)
+    return function(v)
+        local success, msg = func(v)
+
+        if autoscan.enabled then
+            if side == "up" then
+                turtle.inspectUp()
+            elseif side == "down" then
+                turtle.inspectDown()
+            elseif side == "front" then
+                turtle.inspect()
+            end
+        end
+
+        return success, msg
     end
 end
 

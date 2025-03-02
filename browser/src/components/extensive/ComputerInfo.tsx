@@ -1,12 +1,13 @@
 import classNames from "classnames";
 import { FC } from "react";
 
-import { useSecondsSince } from "../../hook/useSecondsSince";
+import Button from "@/components/elements/Button";
+import { useSecondsSince } from "@/hook/useSecondsSince";
 import { createTurtleActions } from "@/lib/devices/turtle";
 import { ComputerInfo } from "@/lib/devices/types";
 import { formatDuration } from "@/lib/format";
 import { WsConnection } from "@/lib/ws/connection";
-import Button from "../elements/Button";
+
 import TurtleControls from "./Turtle/TurtleControls";
 
 const TIMEOUT = 5;

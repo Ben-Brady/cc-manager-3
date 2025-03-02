@@ -1,12 +1,10 @@
 import classNames from "classnames";
-import { ComponentProps, FC, useState } from "react";
+import { ComponentProps, FC } from "react";
 
-const Button: FC<ComponentProps<"button">> = ({ className, disabled, onClick, ...props }) => {
-    const [isRunning, setRunning] = useState<boolean>(false);
-
+const Button: FC<ComponentProps<"button">> = ({ className, disabled, ...props }) => {
     return (
         <button
-            disabled={disabled || isRunning}
+            disabled={disabled}
             className={classNames(
                 "outline outline-2 outline-black size-fit m-0.5",
                 "font-minecraft text-white px-1 bg-gray-300",
@@ -15,15 +13,6 @@ const Button: FC<ComponentProps<"button">> = ({ className, disabled, onClick, ..
                 "disabled:bg-gray-700 disabled:border-transparent",
                 className,
             )}
-            onClick={
-                !onClick
-                    ? undefined
-                    : async (e) => {
-                          setRunning(true);
-                          await onClick(e);
-                          setRunning(false);
-                      }
-            }
             {...props}
         />
     );

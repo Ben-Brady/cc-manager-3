@@ -33,7 +33,6 @@ local function calcRotation(oldX, newX, oldZ, newZ)
     end
 end
 
-
 ---@param oldX number
 ---@param newX number
 ---@param oldZ number
@@ -43,14 +42,9 @@ function exports.reportMovement(oldX, newX, oldZ, newZ)
 
     rotation = calcRotation(oldX, newX, oldZ, newZ)
     network.broadcastPacket({
-        type = "response:rotation",
+        type = "update:rotation",
         facing = rotation,
     })
-end
-
----@return Rotation | nil
-function exports.calibrate()
-    return rotation
 end
 
 function exports.recordTurnLeft()
@@ -65,7 +59,6 @@ function exports.recordTurnLeft()
     elseif rotation == "east" then
         rotation = "north"
     end
-    print(rotation)
 end
 
 function exports.recordTurnRight()

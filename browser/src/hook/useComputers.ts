@@ -1,42 +1,28 @@
-import { range, isEqual } from "lodash";
+import { isEqual, range } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 
 import { ComputerInfo } from "@/lib/devices/types";
-import { HeartbeatResponse, Vec3 } from "@/lib/packet";
+import { HeartbeatResponse } from "@/lib/packet";
 import { WsConnection } from "@/lib/ws/connection";
-import { BlockDetectionResponse } from "@/lib/packet/actions/block";
 
-export type Block = {
-    position: Vec3;
-    name: string;
-};
-
-export const useComputerInfo = (conn: WsConnection) => {
+export const useComputers = (conn: WsConnection | undefined) => {
     const [computers, setComputers] = useState<Record<number, ComputerInfo>>({});
-    const [blocks, setBlocks] = useState<Block[]>([]);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const r = await fetch("http://localhost:8000/api/memory");
-    //         const { devices, blocks } = await r.json();
-    //         setComputers(devices);
-    //         setBlocks(blocks);
-    //     })();
-    // }, []);
 
     useEffect(() => {
+        (async () => {
+            const r = await fetch("http://localhost:8000/api/devices");
+            const computers = await r.json();
+            setComputers(computers);
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (!conn) return;
+
         const controller = new AbortController();
         const signal = controller.signal;
 
-        conn.listenFor("response:block-detection", signal, (body) => {
-            setBlocks((blocks) => {
-                const newBlocks = applyBlockDetection(blocks, body);
-                return newBlocks ?? blocks;
-            });
-            return computers;
-        });
-
-        conn.listenFor("response:position", signal, (body, sender) => {
+        conn.listenFor("update:position", signal, (body, sender) => {
             setComputers((computers) => {
                 const computer = computers[sender];
                 if (!computer) return computers;
@@ -47,7 +33,7 @@ export const useComputerInfo = (conn: WsConnection) => {
             });
         });
 
-        conn.listenFor("response:rotation", signal, (body, sender) => {
+        conn.listenFor("update:rotation", signal, (body, sender) => {
             setComputers((computers) => {
                 const device = computers[sender];
                 if (!device) return computers;
@@ -72,14 +58,7 @@ export const useComputerInfo = (conn: WsConnection) => {
     }, [conn]);
 
     const computerList = useMemo(() => Object.values(computers), [computers]);
-    console.log({
-        computers: computerList,
-        blocks: blocks,
-    });
-    return {
-        computers: computerList,
-        blocks: blocks,
-    };
+    return computerList;
 };
 
 const generateInitialDevice = (heartbeat: HeartbeatResponse, sender: number): ComputerInfo => {
@@ -123,18 +102,4 @@ const applyHeartbeat = (computer: ComputerInfo, body: HeartbeatResponse): Comput
         selectedSlot: selectedSlot ?? computer.selectedSlot,
         locks: body.locks ?? computer.locks,
     };
-};
-
-const applyBlockDetection = (
-    blocks: Block[],
-    body: BlockDetectionResponse,
-): Block[] | undefined => {
-    const { block: name, position } = body;
-
-    const block: Block = {
-        name: name,
-        position: position,
-    };
-    const filteredBlocks = blocks.filter((v) => !isEqual(v.position, block.position));
-    return [...filteredBlocks, block];
 };

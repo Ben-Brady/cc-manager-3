@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { Item, LockType, Vector } from "../generic";
-import { luaArray } from "../utils";
 import { ItemSlot } from "..";
+import { Item, LockType, Vec3 } from "../generic";
+import { luaArray } from "../utils";
 
 export const HeartbeatRequest = z.object({
     type: z.literal("request:heartbeat"),
@@ -13,7 +13,7 @@ export const HeartbeatResponse = z.object({
     type: z.literal("response:heartbeat"),
     label: z.string().optional(),
     uptime: z.number(),
-    position: z.lazy(() => Vector).optional(),
+    position: z.lazy(() => Vec3).optional(),
     deviceData: z.discriminatedUnion("type", [
         z.object({ type: z.literal("computer") }),
         z.object({

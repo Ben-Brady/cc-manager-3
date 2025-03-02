@@ -17,7 +17,7 @@ function exports.withRotationUpdate(action, direction)
         local facing = rotation.getRotation()
         if facing then
             network.broadcastPacket({
-                type = "response:rotation",
+                type = "update:rotation",
                 facing = facing,
             })
         end

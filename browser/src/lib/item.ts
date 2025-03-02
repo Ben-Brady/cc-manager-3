@@ -54,6 +54,13 @@ export const getItemTexture = async (name: string): Promise<string | null> => {
 };
 
 let blockCache = new Map<string, string>();
+export const getCachedBlockTexture = (name: string): string | undefined => {
+    const PREFIX = "minecraft:";
+    if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);
+
+    return blockCache.get(name);
+};
+
 export const getBlockTexture = async (name: string): Promise<string | null> => {
     const PREFIX = "minecraft:";
     if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);

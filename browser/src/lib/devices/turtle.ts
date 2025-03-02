@@ -5,7 +5,6 @@ import { sendEval, sendHeartbeat } from "./requests";
 
 export type TurtleActions = {
     restart: () => void;
-    calibrateRotation: () => void;
     scan: () => void;
     eval: (locks: LockType[], code: string) => Promise<{ success: boolean; value: string }>;
     heartbeat: () => Promise<HeartbeatResponse>;
@@ -53,7 +52,6 @@ export const createTurtleActions = (conn: WsConnection, computerId: number): Tur
 
     return {
         restart: () => sendPacket({ type: "request:restart" }),
-        calibrateRotation: () => sendPacket({ type: "request:rotation" }),
         scan: () => runCode([], false, "turtle.inspect() turtle.inspectDown() turtle.inspectUp()"),
 
         eval: async (locks, code) => {

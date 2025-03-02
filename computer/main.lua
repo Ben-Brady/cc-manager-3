@@ -11,5 +11,6 @@ location.updateFromGPS()
 loop.startThread(threads.executionThread)
 loop.startThread(threads.heartbeatThread)
 loop.startThread(threads.listenerThread)
+loop.startThread(threads.inventoryWatcherThread)
 
 loop.run()

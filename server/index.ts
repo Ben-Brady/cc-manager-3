@@ -7,11 +7,12 @@ const app = express();
 app.use(cors());
 createWebsocketExpress(app);
 
-app.get("/api/memory", (req, res) => {
-    res.json({
-        devices: getDevices(),
-        blocks: getBlocks(),
-    });
+app.get("/api/devices", (req, res) => {
+    res.json(getDevices());
+});
+
+app.get("/api/blocks", (req, res) => {
+    res.json(getBlocks());
 });
 
 app.listen(8000, "0.0.0.0", () => {

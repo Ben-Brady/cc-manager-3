@@ -1,7 +1,7 @@
 export { EvalRequest, EvalResponse } from "./actions/eval";
 export { HeartbeatRequest, HeartbeatResponse } from "./actions/heartbeat";
 export { RestartRequest } from "./actions/restart";
-export { DeviceType, Item as ItemSlot, Vector } from "./generic";
+export { DeviceType, Item, ItemSlot, Vec3 } from "./generic";
 export {
     RequestBody,
     type RequestBodyFromType,

@@ -1,37 +1,52 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 
-import { Block } from "@/hook/useComputerInfo";
-import { getBlockTexture } from "@/lib/item";
+import { Block } from "@/hook/useBlocks";
 
 import { vectorToArray } from "./Canvas";
 
-const BlockBox: FC<{ block: Block }> = ({ block }) => {
-    const texture = useBlockTexture(block.name);
-
+const BlockBox: FC<{
+    block: Block;
+    texture: string | null | undefined;
+    requestTexture: (name: string) => void;
+    onCreateTooltip: (x: number, y: number) => void;
+    onCloseTooltip: () => void;
+}> = ({ block, texture, requestTexture, onCreateTooltip, onCloseTooltip }) => {
     if (block.name === "minecraft:air") return null;
-    if (!texture) return null;
 
-    const base = new THREE.TextureLoader().load(texture);
+    useEffect(() => {
+        if (texture === undefined) requestTexture(block.name);
+    }, [texture]);
+
+    const base = useMemo(
+        () => (texture ? new THREE.TextureLoader().load(texture) : undefined),
+        [texture],
+    );
+
+    if (texture === undefined) return null;
 
     return (
-        <mesh position={vectorToArray(block.position)} scale={1} >
+        <mesh
+            key={vectorToArray(block.position).toString() + block.name}
+            position={vectorToArray(block.position)}
+            scale={1}
+            onPointerMove={(e) => {
+                onCreateTooltip(e.layerX, e.layerY);
+                e.stopPropagation();
+            }}
+            onPointerOut={(e) => {
+                onCloseTooltip();
+                e.stopPropagation();
+            }}
+        >
             <boxGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color="#ffffff" map={base} />
+            {block.name === "minecraft:water" ? (
+                <meshStandardMaterial transparent opacity={0.1} color="#0936ff" />
+            ) : (
+                <meshStandardMaterial map={base} />
+            )}
         </mesh>
     );
 };
 
-const useBlockTexture = (name: string): string | undefined => {
-    const [texture, setTexture] = useState<string | undefined>(undefined);
-
-    useEffect(() => {
-        (async () => {
-            const texture = await getBlockTexture(name);
-            setTexture(texture ?? undefined);
-        })();
-    }, []);
-
-    return texture;
-};
 export default BlockBox;

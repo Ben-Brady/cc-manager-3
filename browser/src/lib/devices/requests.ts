@@ -30,7 +30,3 @@ const createRequestResponsePair = <
 
 export const sendHeartbeat = createRequestResponsePair("request:heartbeat", "response:heartbeat");
 export const sendEval = createRequestResponsePair("request:eval", "response:eval");
-export const sendRotationRequest = createRequestResponsePair(
-    "request:rotation",
-    "response:rotation",
-);

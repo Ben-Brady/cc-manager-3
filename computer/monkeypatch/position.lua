@@ -44,7 +44,7 @@ function exports.withPositionUpdate(func, movement)
         local newPos = location.getPosition()
         if (newPos) then
             network.broadcastPacket({
-                type = "response:position",
+                type = "update:position",
                 position = newPos
             })
         end
