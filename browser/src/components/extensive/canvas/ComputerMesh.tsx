@@ -1,4 +1,5 @@
 import { useFrame } from "@react-three/fiber";
+import { clamp } from "lodash";
 import { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import * as THREE from "three";
@@ -24,9 +25,10 @@ const TURTLE_LEFT_TEXTURE = loadTexture(TURTLE_LEFT_URL);
 const TURTLE_RIGHT_TEXTURE = loadTexture(TURTLE_RIGHT_URL);
 const TURTLE_TOP_TEXTURE = loadTexture(TURTLE_TOP_URL);
 
-const lerp = (current: number, target: number, speed: number) => {
-    const step = target - current;
-    return current + step / (1 / speed);
+const interpolate = (current: number, target: number, speed: number) => {
+    const diff = target - current;
+    const step = diff < 1 ? clamp(diff, -speed, speed) : diff;
+    return current + step;
 };
 
 const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
@@ -51,9 +53,9 @@ const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
                 return;
             }
 
-            mesh.position.x = lerp(mesh.position.x, targetPos.x, delta * 10);
-            mesh.position.y = lerp(mesh.position.y, targetPos.y, delta * 10);
-            mesh.position.z = lerp(mesh.position.z, targetPos.z, delta * 10);
+            mesh.position.x = interpolate(mesh.position.x, targetPos.x, delta * 5);
+            mesh.position.y = interpolate(mesh.position.y, targetPos.y, delta * 5);
+            mesh.position.z = interpolate(mesh.position.z, targetPos.z, delta * 5);
         }
 
         const targetRot = targetRotationRef.current;

@@ -1,4 +1,4 @@
-import { ComponentProps, FC, PointerEvent, PointerEventHandler, useCallback } from "react";
+import { ComponentProps, FC, useCallback } from "react";
 
 import { Block } from "@/hook/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";

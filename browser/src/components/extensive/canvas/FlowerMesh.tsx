@@ -3,7 +3,7 @@ import { FC, memo } from "react";
 import { THREE } from "@/lib/three";
 
 import { MeshProps } from "./BlockMesh";
-import { vec3ToThree } from "./ComputerCanvas";
+import { vec3ToArray } from "./ComputerCanvas";
 
 const FLOWER_NAMES = [
     "minecraft:short_grass",
@@ -20,12 +20,12 @@ export const isFlower = (name: string) => FLOWER_NAMES.includes(name);
 
 const FlowerMesh: FC<MeshProps> = memo(({ texture, block, meshProps }) => (
     <>
-        <mesh position={vec3ToThree(block.position)} rotation={[0, Math.PI / 4, 0]} {...meshProps}>
+        <mesh position={vec3ToArray(block.position)} rotation={[0, Math.PI / 4, 0]} {...meshProps}>
             <planeGeometry args={[1, 1]} />
             <meshStandardMaterial map={texture} transparent side={THREE.DoubleSide} />
         </mesh>
         <mesh
-            position={vec3ToThree(block.position)}
+            position={vec3ToArray(block.position)}
             rotation={[0, (Math.PI / 4) * 3, 0]}
             {...meshProps}
         >

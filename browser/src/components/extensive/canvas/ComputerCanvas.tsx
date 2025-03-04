@@ -11,7 +11,7 @@ import { Vec3 } from "@/lib/packet";
 import { vec3Compare } from "@/lib/packet/generic";
 
 import BlockMesh from "./BlockMesh";
-import TurtleMesh from "./ComputerBox";
+import TurtleMesh from "./ComputerMesh";
 import { isFlower } from "./FlowerMesh";
 
 export type Tooltip = {
@@ -29,6 +29,7 @@ const ComputerCanvas: FC<{
     const [tooltip, setTooltip] = useState<Tooltip | undefined>(undefined);
     const blockList = useMemo(() => {
         let blockList = Array.from(Object.values(blocks)) as Block[];
+        blockList.filter((v) => isBlockSurrounded(v.position, blocks));
         return blockList;
     }, [blocks]);
 
@@ -87,7 +88,7 @@ const CameraControls: FC<{ blocks: Block[]; turtle: TurtleInfo | undefined }> = 
     return (
         <OrbitControls
             maxDistance={5}
-            target={!turtle?.position ? undefined : vec3ToThree(turtle.position)}
+            target={!turtle?.position ? undefined : vec3ToArray(turtle.position)}
             enablePan
         />
     );
@@ -137,6 +138,6 @@ const calcCamera = (
     };
 };
 
-export const vec3ToThree = ({ x, y, z }: Vec3): THREE.Vector3 => new THREE.Vector3(x, y, z);
+export const vec3ToArray = ({ x, y, z }: Vec3): [number, number, number] => [x, y, z];
 
 export default ComputerCanvas;
