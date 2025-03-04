@@ -2,9 +2,8 @@ import { FC } from "react";
 
 import Button from "@/components/elements/Button";
 import Container from "@/components/elements/Container";
+import ComputerSection from "@/components/extensive/ComputerInfo";
 import { useConnectionContext } from "@/context/ConnectionProvider";
-
-import ComputerSection from "./ComputerInfo";
 
 const ListingPage: FC = () => {
     const { conn, computers, blocks } = useConnectionContext();
@@ -21,7 +20,7 @@ const ListingPage: FC = () => {
             </div>
             {computers.map((computer) => (
                 <Container key={computer.id} className="flex gap-12 items-end">
-                    <ComputerSection computer={computer} conn={conn} />
+                    <ComputerSection computer={computer} />
                 </Container>
             ))}
         </div>

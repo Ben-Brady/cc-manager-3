@@ -1,17 +1,23 @@
 import "./index.css";
 
-import MainPage from "./components/extensive/MainPage";
-import { ConnectionProvider } from "./context/ConnectionProvider";
-import { useConnection } from "./hook/useConnection";
+import { BrowserRouter, Route, Routes } from "react-router";
 
-export function App() {
-    const conn = useConnection();
+import Layout from "@/components/layouts/Layout";
+import { ConnectionProvider } from "@/context/ConnectionProvider";
+import HomePage from "@/pages/+index";
+import TurtlePage from "@/pages/+turtle";
 
-    if (!conn) return <div>Connecting...</div>;
-
+export default function App() {
     return (
         <ConnectionProvider>
-            <MainPage />
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<Layout />}>
+                        <Route index element={<HomePage />} />
+                        <Route path="/turtle/:id" element={<TurtlePage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
         </ConnectionProvider>
     );
 }

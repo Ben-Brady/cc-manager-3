@@ -1,4 +1,4 @@
-local WS_SERVER = "ws://localhost:8000/ws/computer"
+local WS_SERVER = "ws://127.0.0.1:8000/ws/computer"
 local PACKET_IN_PROTOCOL = "CCM3:packet-in"
 local PACKET_OUT_PROTOCOL = "CCM3:packet-out"
 

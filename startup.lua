@@ -1,5 +1,5 @@
-local SERVER = "localhost:6543"
-local FOLDER = "proxy-computer"
+local SERVER = "127.0.0.1:6543"
+local FOLDER = "computer"
 local PROGRAM_DIR = "program"
 
 print("Loading...")
@@ -28,5 +28,6 @@ for filename, content in pairs(data) do
 end
 
 print("Starting...")
-os.run(_ENV, fs.combine(PROGRAM_DIR, "main.lua"))
+shell.setDir(PROGRAM_DIR)
+shell.run("main.lua")
 print("Program Stopped")

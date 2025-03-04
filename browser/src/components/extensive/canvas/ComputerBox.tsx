@@ -1,10 +1,12 @@
 import { useFrame } from "@react-three/fiber";
 import { FC, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
 import * as THREE from "three";
 
 import { TurtleInfo } from "@/lib/devices/types";
 import { Vec3 } from "@/lib/packet";
 import { Rotation } from "@/lib/packet/generic";
+import { loadTexture } from "@/lib/three/loader";
 
 import {
     TURTLE_BACK_URL,
@@ -15,18 +17,6 @@ import {
     TURTLE_TOP_URL,
 } from "./assets";
 
-const loader = new THREE.TextureLoader();
-
-const loadTexture = (url: string) => {
-    const texture = loader.load(url);
-    texture.colorSpace = THREE.SRGBColorSpace;
-
-    // Pixelate
-    texture.minFilter = THREE.NearestFilter;
-    texture.magFilter = THREE.NearestFilter;
-
-    return texture;
-};
 const TURTLE_BACK_TEXTURE = loadTexture(TURTLE_BACK_URL);
 const TURTLE_BOTTOM_TEXTURE = loadTexture(TURTLE_BOTTOM_URL);
 const TURTLE_FRONT_TEXTURE = loadTexture(TURTLE_FRONT_URL);
@@ -39,10 +29,11 @@ const lerp = (current: number, target: number, speed: number) => {
     return current + step / (1 / speed);
 };
 
-const TurtleBox: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
+const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
     const meshRef = useRef<THREE.Mesh>(null);
     const targetPositionRef = useRef<Vec3>(turtle.position);
     const targetRotationRef = useRef<THREE.Euler>(undefined);
+    const navigate = useNavigate();
 
     useFrame((_, delta) => {
         const mesh = meshRef.current;
@@ -83,7 +74,7 @@ const TurtleBox: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
     if (!position) return null;
 
     return (
-        <mesh ref={meshRef} scale={0.8}>
+        <mesh ref={meshRef} scale={0.8} onClick={() => navigate(`/turtle/${turtle.id}`)}>
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial map={TURTLE_LEFT_TEXTURE} attach="material-5" />
             <meshStandardMaterial map={TURTLE_BOTTOM_TEXTURE} attach="material-3" />
@@ -105,4 +96,4 @@ const calcRotation = (facing: undefined | Rotation): THREE.Euler => {
     return rotation;
 };
 
-export default TurtleBox;
+export default TurtleMesh;

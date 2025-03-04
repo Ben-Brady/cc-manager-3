@@ -6,11 +6,12 @@ import * as THREE from "three";
 import Container from "@/components/elements/Container";
 import { Block } from "@/hook/useBlocks";
 import { ComputerInfo, TurtleInfo } from "@/lib/devices/types";
-import { getBlockTexture } from "@/lib/item";
 import { Vec3 } from "@/lib/packet";
+import { vec3Compare } from "@/lib/packet/generic";
+import { getBlockTexture } from "@/lib/texture";
 
-import BlockBox from "./BlockBox";
-import TurtleBox from "./ComputerBox";
+import BlockMesh from "./BlockBox";
+import TurtleMesh from "./ComputerBox";
 
 type Tooltip = {
     x: number;
@@ -18,11 +19,11 @@ type Tooltip = {
     text: string;
 };
 
-const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
+const ComputerCanvas: FC<{ turtle: TurtleInfo; computers: ComputerInfo[]; blocks: Block[] }> = ({
+    turtle,
     computers,
     blocks,
 }) => {
-    const turtle = computers.find((v) => v.type === "turtle");
     const camera = calcCamera(turtle, blocks);
     const [tooltip, setTooltip] = useState<Tooltip | undefined>(undefined);
     const [textures, setTextures] = useState<Record<string, string | null>>({});
@@ -53,9 +54,10 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
                 <CameraControls blocks={blocks} turtle={turtle} />
                 <ambientLight />
                 {blocks.map((block) => (
-                    <BlockBox
+                    <BlockMesh
                         key={vectorToArray(block.position).toString() + block.name}
                         block={block}
+                        isOverlappingTurtle={vec3Compare(block.position, turtle?.position)}
                         texture={textures[block.name]}
                         onCreateTooltip={(x, y) => setTooltip({ text: block.name, x, y })}
                         onCloseTooltip={() => setTooltip(undefined)}
@@ -64,7 +66,7 @@ const ComputerCanvas: FC<{ computers: ComputerInfo[]; blocks: Block[] }> = ({
                 {computers
                     .filter((v) => v.type === "turtle")
                     .map((v) => (
-                        <TurtleBox key={v.id} turtle={v} />
+                        <TurtleMesh key={v.id} turtle={v} />
                     ))}
             </Canvas>
         </Container>

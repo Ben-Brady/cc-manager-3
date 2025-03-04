@@ -6,12 +6,13 @@ import { TurtleInfo } from "@/lib/devices/types";
 
 import InventoryGrid from "../Inventory/InventoryGrid";
 
-export const InventoryDisplay: FC<{ turtle: TurtleInfo; actions: TurtleActions }> = ({
+export const InventoryDisplay: FC<{ turtle: TurtleInfo; actions?: TurtleActions }> = ({
     turtle,
     actions,
 }) => {
     const leftHand = turtle?.leftHand ? [turtle?.leftHand] : undefined;
     const rightHand = turtle?.rightHand ? [turtle?.rightHand] : undefined;
+
     return (
         <Container className="size-fit flex flex-col gap-2">
             <div className="flex justify-between">
@@ -23,7 +24,7 @@ export const InventoryDisplay: FC<{ turtle: TurtleInfo; actions: TurtleActions }
                 width={4}
                 items={turtle?.inventory}
                 selectedSlot={turtle?.selectedSlot}
-                onClick={(slot) => actions.select(slot)}
+                onClick={actions ? (slot) => actions.select(slot) : undefined}
             />
         </Container>
     );

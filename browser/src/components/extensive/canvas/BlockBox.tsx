@@ -1,23 +1,28 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 import { Block } from "@/hook/useBlocks";
+import { loadTexture } from "@/lib/three/loader";
 
 import { vectorToArray } from "./Canvas";
 
-const BlockBox: FC<{
+const BlockMesh: FC<{
     block: Block;
+    isOverlappingTurtle: boolean;
     texture: string | null | undefined;
     onCreateTooltip: (x: number, y: number) => void;
     onCloseTooltip: () => void;
-}> = ({ block, texture, onCreateTooltip, onCloseTooltip }) => {
+}> = ({ block, texture, isOverlappingTurtle, onCreateTooltip, onCloseTooltip }) => {
+    const intervalRef = useRef<any | undefined>(undefined);
+
+    useEffect(() => {
+        return () => intervalRef.current && clearInterval(intervalRef.current);
+    }, []);
+
+    const base = useMemo(() => loadTexture(texture ?? "/missing.png"), [texture]);
+
+    // Is Loading
     if (block.name === "minecraft:air") return null;
-
-    const base = useMemo(
-        () => (texture ? new THREE.TextureLoader().load(texture) : undefined),
-        [texture],
-    );
-
     if (texture === undefined) return null;
 
     return (
@@ -25,11 +30,14 @@ const BlockBox: FC<{
             key={vectorToArray(block.position).toString() + block.name}
             position={vectorToArray(block.position)}
             scale={1}
-            onPointerMove={(e) => {
-                onCreateTooltip(e.layerX, e.layerY);
+            onPointerEnter={(e) => {
+                intervalRef.current = setTimeout(() => {
+                    onCreateTooltip(e.layerX, e.layerY);
+                }, 300);
                 e.stopPropagation();
             }}
             onPointerOut={(e) => {
+                if (intervalRef.current) clearInterval(intervalRef.current);
                 onCloseTooltip();
                 e.stopPropagation();
             }}
@@ -38,10 +46,14 @@ const BlockBox: FC<{
             {block.name === "minecraft:water" ? (
                 <meshStandardMaterial transparent opacity={0.1} color="#0936ff" />
             ) : (
-                <meshStandardMaterial map={base} />
+                <meshStandardMaterial
+                    map={base}
+                    transparent
+                    opacity={isOverlappingTurtle ? 0.2 : 0.7}
+                />
             )}
         </mesh>
     );
 };
 
-export default BlockBox;
+export default BlockMesh;

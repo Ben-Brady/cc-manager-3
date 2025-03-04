@@ -15,6 +15,6 @@ app.get("/api/blocks", (req, res) => {
     res.json(getBlocks());
 });
 
-app.listen(8000, "0.0.0.0", () => {
+app.listen(8000, "127.0.0.1", () => {
     console.log("Serving on localhost:8000");
 });

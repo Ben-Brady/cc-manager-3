@@ -1,7 +1,6 @@
 local heartbeat = require "actions.heartbeat"
 local restart = require "actions.restart"
 local eval = require "actions.eval"
-local rotation = require "actions.rotation"
 
 ---@class TaskInfo
 ---@field type ComputerTaskType

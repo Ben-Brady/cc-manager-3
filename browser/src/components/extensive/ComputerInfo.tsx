@@ -5,46 +5,26 @@ import Button from "@/components/elements/Button";
 import { useSecondsSince } from "@/hook/useSecondsSince";
 import { createTurtleActions } from "@/lib/devices/turtle";
 import { ComputerInfo } from "@/lib/devices/types";
-import { formatDuration } from "@/lib/format";
 import { WsConnection } from "@/lib/ws/connection";
 
 import TurtleControls from "./Turtle/TurtleControls";
+import ComputerBanner from "./Turtle/ComputerBanner";
+import { InventoryDisplay } from "./Turtle/InventoryDisplay";
+import { useNavigate } from "react-router";
 
 const TIMEOUT = 5;
 
-const ComputerSection: FC<{ computer: ComputerInfo; conn: WsConnection }> = ({
-    computer,
-    conn,
-}) => {
-    const { id, label, type, position } = computer;
+const ComputerSection: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     const secondsSinceUpdate = useSecondsSince(new Date(computer.lastUpdated)) ?? 0;
-
-    const uptime = (secondsSinceUpdate ?? 0) + computer.uptime;
     const isLagging = !!secondsSinceUpdate && secondsSinceUpdate > TIMEOUT;
-
-    const actions = createTurtleActions(conn, computer.id);
+    const navigate = useNavigate();
 
     return (
         <div className={classNames("flex flex-col w-full duration-300", isLagging && "opacity-50")}>
-            <div className="flex justify-between items-center">
-                <span className="font-minecraft capitalize">
-                    {label ? `${label}(${id})` : `ID ${id}`} | {type}
-                </span>
-                <span className="font-minecraft text-center">
-                    {position?.x ?? "?"}, {position?.y ?? "?"}, {position?.z ?? "?"} |{" "}
-                    {computer.type === "turtle" ? computer.facing ?? "?" : "?"}
-                </span>
-                <span className="font-minecraft capitalize text-end">
-                    {formatDuration(uptime)} Uptime
-                </span>
-            </div>
-            <div className="flex flex-col justify-between mt-4 gap-2">
-                    <Button onClick={actions.restart}>Restart</Button>
-                    {computer.type === "turtle" && (
-                        <>
-                            <TurtleControls conn={conn} turtle={computer} />
-                        </>
-                    )}
+            <div className="flex flex-col justify-between items-center gap-4">
+                <ComputerBanner computer={computer} />
+                <Button onClick={() => navigate(`/turtle/${computer.id}`)}>Take Control</Button>
+                {computer.type === "turtle" && <InventoryDisplay turtle={computer} />}
             </div>
         </div>
     );

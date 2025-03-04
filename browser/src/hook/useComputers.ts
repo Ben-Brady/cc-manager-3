@@ -1,4 +1,4 @@
-import { isEqual, range } from "lodash";
+import {  range } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 
 import { ComputerInfo } from "@/lib/devices/types";
@@ -11,8 +11,8 @@ export const useComputers = (conn: WsConnection | undefined) => {
     useEffect(() => {
         (async () => {
             const r = await fetch("http://localhost:8000/api/devices");
-            const computers = await r.json();
-            setComputers(computers);
+            const computers = (await r.json()) as ComputerInfo[];
+            setComputers(Object.fromEntries(computers.map((v) => [v.id, v])));
         })();
     }, []);
 

@@ -17,6 +17,7 @@ def all_files_in_folder(folder: str):
         path = path.removeprefix(folder_prefix)
         for file in path_files:
             file = Path(path, file)
+            print(file)
             all_files.append(file)
 
     return [Path(file) for file in all_files]
@@ -54,9 +55,9 @@ with socketserver.TCPServer(("127.0.0.1", PORT or 0), ProgramServer, bind_and_ac
     socket.server_activate()
     atexit.register(lambda: socket.server_close())
 
-    _, port = socket.socket.getsockname()
-    print(f"Serving at http://localhost:{port}")
+    hostname, port = socket.socket.getsockname()
+    print(f"Serving at http://{hostname}:{port}")
     try:
         socket.serve_forever()
-    except:
+    finally:
         socket.server_close()

@@ -24,7 +24,7 @@ export type WsConnection = {
     close: () => void;
 };
 
-const HOSTNAME = "ws://localhost:3000";
+const HOSTNAME = "ws://12:3000";
 
 export const playerJoinUrl = (code: string) => `${HOSTNAME}/join?code=${code}`;
 export const playerRejoinUrl = (code: string, id: number) =>

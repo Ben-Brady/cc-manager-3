@@ -7,11 +7,11 @@ import Button from "@/components/elements/Button";
 import Container from "@/components/elements/Container";
 import { TurtleActions } from "@/lib/devices/turtle";
 
-const MovemementWheel: FC<{
+const TurtleMovemementControls: FC<{
     actions: TurtleActions;
 }> = ({ actions }) => {
     return (
-        <Container className="grid gap-0.5 grid-cols-3 grid-rows-3 place-content-center place-items-center size-fit">
+        <Container className="grid gap-0.5 grid-cols-3 grid-rows-2 place-content-center place-items-center size-fit">
             <Button className="size-full flex items-center justify-center" onClick={actions.goUp}>
                 <img src={ArrowUpImage} className="size-4 m-0.5" />
             </Button>
@@ -39,45 +39,26 @@ const MovemementWheel: FC<{
             >
                 <img src={ArrowImage} className="size-4" />
             </Button>
-            <Button
-                className="size-full flex items-center justify-center col-[1/4]"
-                onClick={(e) => onTakeover(e.currentTarget, actions)}
-            />
         </Container>
     );
 };
 
-const onTakeover = (element: HTMLElement, actions: TurtleActions) => {
-    element.requestPointerLock({});
-
-    const controller = new AbortController();
-
+const addKeyboardHandler = (signal: AbortSignal, actions: TurtleActions) => {
     let isUpPressed = false;
     let isDownPressed = false;
 
-    document.addEventListener(
-        "pointerlockchange",
-        () => {
-            if (document.pointerLockElement === null) {
-                controller.abort();
-            }
-        },
-        { signal: controller.signal },
-    );
     document.addEventListener(
         "keyup",
         ({ key }) => {
             if (key === "ArrowUp") isUpPressed = false;
             if (key === "ArrowDown") isDownPressed = false;
         },
-        { signal: controller.signal },
+        { signal },
     );
 
     document.addEventListener(
         "keydown",
         (e) => {
-            if (e.key === "Escape") return;
-
             if (e.key === "ArrowUp") isUpPressed = true;
             if (e.key === "ArrowDown") isDownPressed = true;
 
@@ -107,8 +88,8 @@ const onTakeover = (element: HTMLElement, actions: TurtleActions) => {
             }
             e.stopPropagation();
         },
-        { signal: controller.signal },
+        { signal },
     );
 };
 
-export default MovemementWheel;
+export default TurtleMovemementControls;

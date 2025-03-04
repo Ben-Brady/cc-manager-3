@@ -21,6 +21,7 @@
     "mc-assets": "^0.2.35",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router": "^7.2.0",
     "temporal": "^0.7.1"
   },
   "devDependencies": {
