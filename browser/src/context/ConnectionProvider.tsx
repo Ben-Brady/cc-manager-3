@@ -7,7 +7,7 @@ import { createContext, FC, ReactNode, useContext } from "react";
 
 type ConnectionContextType = {
     conn: WsConnection;
-    blocks: Block[];
+    blocks: Record<string, Block>;
     computers: ComputerInfo[];
 };
 

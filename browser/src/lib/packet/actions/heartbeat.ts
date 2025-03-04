@@ -22,6 +22,7 @@ export const HeartbeatResponse = z.object({
             selectedSlot: z.number(),
             leftHand: ItemSlot.optional(),
             rightHand: ItemSlot.optional(),
+            fuel: z.number(),
         }),
         z.object({ type: z.literal("pocket") }),
     ]),

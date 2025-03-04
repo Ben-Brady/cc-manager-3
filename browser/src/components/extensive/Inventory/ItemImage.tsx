@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { FC } from "react";
 
-import { getItemTexture } from "@/lib/texture";
+import { getItemTexture } from "@/lib/minecraft/texture";
 
 type ItemImageProps = {
     name: string;

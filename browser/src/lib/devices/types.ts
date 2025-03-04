@@ -17,6 +17,7 @@ export type TurtleInfo = BaseComputer & {
     facing?: Rotation;
     leftHand?: ItemSlot;
     rightHand?: ItemSlot;
+    fuel?: number;
 };
 
 export type ComputerInfo =

@@ -42,14 +42,14 @@ export const getCachedBlockTexture = (name: string): string | undefined => {
     return blockCache.get(name);
 };
 
-export const getBlockTexture = async (name: string): Promise<string | null> => {
+export const getBlockTexture = async (name: string): Promise<string | undefined> => {
     const PREFIX = "minecraft:";
     if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);
 
     if (blockCache.has(name)) return blockCache.get(name)!;
 
     const item = blockAtlas.getTextureInfo(name) ?? itemAtlas.getTextureInfo(name);
-    if (!item) return null;
+    if (!item) return undefined;
 
     const img = await item.getLoadedImage();
     const url = generateImageTexture(img, item);

@@ -1,6 +1,7 @@
 local heartbeat = require "actions.heartbeat"
 local restart = require "actions.restart"
 local eval = require "actions.eval"
+local scan = require "actions.scan"
 
 ---@class TaskInfo
 ---@field type ComputerTaskType
@@ -22,6 +23,11 @@ return {
     {
         type = "request:eval",
         execute = eval,
+        locks = {},
+    },
+    {
+        type = "request:scan",
+        execute = scan,
         locks = {},
     },
 }

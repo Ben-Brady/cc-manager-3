@@ -12,7 +12,7 @@
 --- | HeartbeatRequest
 --- | RestartRequest
 --- | EvalRequest
---- | RotationRequest
+--- | ScanRequest
 
 ---@alias ResponseBody
 --- | HeartbeatResponse
@@ -24,6 +24,10 @@
 
 ---@class RestartRequest
 ---@field type "request:restart"
+
+---@class ScanRequest
+---@field type "request:scan"
+---@field range number
 
 ---@class EvalRequest
 ---@field type "request:eval"
@@ -62,10 +66,10 @@
 ---@field position Vec3 | nil
 ---@field locks LockType[]
 ---@field tasks RequestBody[]
----@field deviceData DeviceHeartbeatData
+---@field deviceData HeartbeatDeviceData
 
 ---@alias DeviceType "computer" | "pocket" | "turtle"
----@alias DeviceHeartbeatData ComputerHeartbeatData | PocketHeartbeatData | TurtleHeartbeatData
+---@alias HeartbeatDeviceData ComputerHeartbeatData | PocketHeartbeatData | TurtleHeartbeatData
 
 ---@class ComputerHeartbeatData
 ---@field type "computer"
@@ -79,6 +83,7 @@
 ---@field selectedSlot number
 ---@field leftHand ItemSlot
 ---@field rightHand ItemSlot
+---@field fuel number
 
 ---@class Vec3
 ---@field x number

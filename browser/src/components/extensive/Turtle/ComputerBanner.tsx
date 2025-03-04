@@ -11,17 +11,26 @@ const ComputerBanner: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     const uptime = (secondsSinceUpdate ?? 0) + computer.uptime;
 
     return (
-        <div className="flex justify-between items-center w-full">
-            <span className="font-minecraft capitalize">
-                {label ? `${label}(${id})` : `ID ${id}`} | {type}
-            </span>
-            <span className="font-minecraft text-center">
-                {position?.x ?? "?"}, {position?.y ?? "?"}, {position?.z ?? "?"} |{" "}
-                {computer.type === "turtle" ? computer.facing ?? "?" : "?"}
-            </span>
-            <span className="font-minecraft capitalize text-end">
-                {formatDuration(uptime)} Uptime
-            </span>
+        <div className="flex flex-col w-full">
+            <div className="flex justify-between items-center w-full">
+                <span className="font-minecraft capitalize">
+                    {label ? `${label}(${id})` : `ID ${id}`} | {type}
+                </span>
+                <span className="font-minecraft text-center">
+                    {position?.x ?? "?"}, {position?.y ?? "?"}, {position?.z ?? "?"} |{" "}
+                    {computer.type === "turtle" ? computer.facing ?? "?" : "?"}
+                </span>
+                <span className="font-minecraft capitalize text-end">
+                    {formatDuration(uptime)} Uptime
+                </span>
+            </div>
+            {computer.type == "turtle" && (
+                <div className="flex justify-between items-center w-full">
+                    <span className="font-minecraft capitalize">
+                        {computer.fuel} Fuel
+                    </span>
+                </div>
+            )}
         </div>
     );
 };

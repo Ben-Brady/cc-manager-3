@@ -16,10 +16,18 @@ return function()
     local position = location.getPosition()
 
     local deviceType = device.getDeviceType()
+    ---@type HeartbeatDeviceData
     local deviceData = { type = deviceType }
     if deviceData.type == "turtle" then
         deviceData.inventory = inventory.getInventory()
         deviceData.selectedSlot = turtle.getSelectedSlot()
+
+        local fuel = turtle.getFuelLevel()
+        if type(fuel) == "number" then
+            deviceData.fuel = fuel
+        else
+            deviceData.fuel = math.maxinteger
+        end
     end
 
     network.broadcastPacket({

@@ -3,9 +3,10 @@ import { z } from "zod";
 import { BlockDetectionResponse } from "./actions/block";
 import { EvalRequest, EvalResponse } from "./actions/eval";
 import { HeartbeatRequest, HeartbeatResponse } from "./actions/heartbeat";
-import { RestartRequest } from "./actions/restart";
-import { RotationRequest, RotationResponse } from "./actions/rotation";
 import { PositionResponse } from "./actions/position";
+import { RestartRequest } from "./actions/restart";
+import { RotationResponse } from "./actions/rotation";
+import { ScanRequest } from "./actions/scan";
 
 export const RequestPacket = z.object({
     destination: z.union([z.literal("*"), z.number()]),
@@ -20,12 +21,18 @@ export const ResponsePacket = z.object({
 export type ResponsePacket = z.infer<typeof ResponsePacket>;
 
 export const RequestBody = z.lazy(() =>
-    z.union([HeartbeatRequest, EvalRequest, RestartRequest, RotationRequest]),
+    z.union([HeartbeatRequest, EvalRequest, RestartRequest, ScanRequest]),
 );
 export type RequestBody = z.infer<typeof RequestBody>;
 
 export const ResponseBody = z.lazy(() =>
-    z.union([HeartbeatResponse, EvalResponse, BlockDetectionResponse, RotationResponse, PositionResponse]),
+    z.union([
+        HeartbeatResponse,
+        EvalResponse,
+        BlockDetectionResponse,
+        RotationResponse,
+        PositionResponse,
+    ]),
 );
 export type ResponseBody = z.infer<typeof ResponseBody>;
 

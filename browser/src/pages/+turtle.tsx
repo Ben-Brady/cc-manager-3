@@ -1,9 +1,10 @@
 import { FC, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import ComputerCanvas from "@/components/extensive/canvas/Canvas";
+import ComputerCanvas from "@/components/extensive/canvas/ComputerCanvas";
 import CanvasControls from "@/components/extensive/canvas/CanvasControls";
 import { useConnectionContext } from "@/context/ConnectionProvider";
+import { TurtleInfo } from "@/lib/devices/types";
 
 const CanvasPage: FC = () => {
     const { conn, blocks, computers } = useConnectionContext();
@@ -11,7 +12,8 @@ const CanvasPage: FC = () => {
     const navigate = useNavigate();
 
     const id = parseInt(params.id as string);
-    const turtle = computers.filter((v) => v.type === "turtle").find((v) => v.id === id);
+    const turtles = computers.filter((v) => v.type === "turtle") as TurtleInfo[];
+    const turtle = turtles.find((v) => v.id === id);
 
     useEffect(() => {
         if (!turtle) navigate("/");

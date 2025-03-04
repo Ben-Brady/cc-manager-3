@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 const loader = new THREE.TextureLoader();
 
-export const loadTexture = (url: string): THREE.texture => {
+export const loadTexture = (url: string): THREE.Texture => {
     const texture = loader.load(url);
     texture.colorSpace = THREE.SRGBColorSpace;
 
@@ -12,3 +12,5 @@ export const loadTexture = (url: string): THREE.texture => {
 
     return texture;
 };
+
+export const MISSING_TEXTURE = loadTexture("missing.png");

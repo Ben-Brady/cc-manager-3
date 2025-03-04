@@ -40,7 +40,7 @@ const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
         <div className="flex flex-col gap-1 w-full">
             <textarea
                 ref={inputRef}
-                className="resize-none w-full h-32 font-minecraft overflow-auto bg-black-700 text-gray-100 border-none outline-none p-1"
+                className="resize-none w-full h-64 font-minecraft overflow-auto bg-black-700 text-gray-100 border-none outline-none p-1"
             />
             {output && (
                 <textarea

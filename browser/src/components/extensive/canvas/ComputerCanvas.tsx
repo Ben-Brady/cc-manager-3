@@ -1,43 +1,35 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 
 import Container from "@/components/elements/Container";
-import { Block } from "@/hook/useBlocks";
+import { Block, vec3Key } from "@/hook/useBlocks";
 import { ComputerInfo, TurtleInfo } from "@/lib/devices/types";
+import { getBlockTexture } from "@/lib/minecraft/texture";
 import { Vec3 } from "@/lib/packet";
 import { vec3Compare } from "@/lib/packet/generic";
-import { getBlockTexture } from "@/lib/texture";
 
-import BlockMesh from "./BlockBox";
+import BlockMesh from "./BlockMesh";
 import TurtleMesh from "./ComputerBox";
+import { isFlower } from "./FlowerMesh";
 
-type Tooltip = {
+export type Tooltip = {
     x: number;
     y: number;
     text: string;
 };
 
-const ComputerCanvas: FC<{ turtle: TurtleInfo; computers: ComputerInfo[]; blocks: Block[] }> = ({
-    turtle,
-    computers,
-    blocks,
-}) => {
-    const camera = calcCamera(turtle, blocks);
+const ComputerCanvas: FC<{
+    turtle: TurtleInfo;
+    computers: ComputerInfo[];
+    blocks: Record<string, Block>;
+}> = ({ turtle, computers, blocks }) => {
+    const camera = calcCamera(turtle, Object.values(blocks));
     const [tooltip, setTooltip] = useState<Tooltip | undefined>(undefined);
-    const [textures, setTextures] = useState<Record<string, string | null>>({});
-
-    useEffect(() => {
-        blocks.forEach(({ name }) => {
-            (async () => {
-                const texture = await getBlockTexture(name);
-                setTextures((textures) => ({
-                    ...textures,
-                    [name]: texture,
-                }));
-            })();
-        });
+    const blockList = useMemo(() => {
+        let blockList = Array.from(Object.values(blocks)) as Block[];
+        return blockList;
     }, [blocks]);
 
     return (
@@ -50,26 +42,44 @@ const ComputerCanvas: FC<{ turtle: TurtleInfo; computers: ComputerInfo[]; blocks
                     {tooltip.text}
                 </Container>
             )}
-            <Canvas camera={camera}>
-                <CameraControls blocks={blocks} turtle={turtle} />
+            <Canvas>
+                <CameraControls blocks={blockList} turtle={turtle} />
                 <ambientLight />
-                {blocks.map((block) => (
+                {blockList.map((block) => (
                     <BlockMesh
-                        key={vectorToArray(block.position).toString() + block.name}
+                        key={vec3Key(block.position).toString() + block.name}
                         block={block}
                         isOverlappingTurtle={vec3Compare(block.position, turtle?.position)}
-                        texture={textures[block.name]}
-                        onCreateTooltip={(x, y) => setTooltip({ text: block.name, x, y })}
-                        onCloseTooltip={() => setTooltip(undefined)}
+                        setTooltip={setTooltip}
                     />
                 ))}
                 {computers
                     .filter((v) => v.type === "turtle")
-                    .map((v) => (
-                        <TurtleMesh key={v.id} turtle={v} />
+                    .map((turtle) => (
+                        <TurtleMesh key={turtle.id} turtle={turtle} />
                     ))}
             </Canvas>
         </Container>
+    );
+};
+
+const isBlockSurrounded = (position: Vec3, blocks: Record<string, Block>) => {
+    const isFullBlock = ({ x = 0, y = 0, z = 0 }: { x?: number; y?: number; z?: number }) => {
+        const blockPos = { x: position.x + x, y: position.y + y, z: position.z + z };
+        const key = vec3Key(blockPos);
+        const block = blocks[key];
+        if (block === undefined) return false;
+        if (isFlower(block.name)) return false;
+        return true;
+    };
+
+    return (
+        isFullBlock({ x: 1 }) &&
+        isFullBlock({ x: -1 }) &&
+        isFullBlock({ y: 1 }) &&
+        isFullBlock({ y: -1 }) &&
+        isFullBlock({ z: 1 }) &&
+        isFullBlock({ z: -1 })
     );
 };
 
@@ -77,7 +87,7 @@ const CameraControls: FC<{ blocks: Block[]; turtle: TurtleInfo | undefined }> = 
     return (
         <OrbitControls
             maxDistance={5}
-            target={!turtle?.position ? undefined : vectorToArray(turtle.position)}
+            target={!turtle?.position ? undefined : vec3ToThree(turtle.position)}
             enablePan
         />
     );
@@ -127,10 +137,6 @@ const calcCamera = (
     };
 };
 
-export const vectorToArray = (vector: Vec3): [number, number, number] => [
-    vector.x,
-    vector.y,
-    vector.z,
-];
+export const vec3ToThree = ({ x, y, z }: Vec3): THREE.Vector3 => new THREE.Vector3(x, y, z);
 
 export default ComputerCanvas;

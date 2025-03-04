@@ -1,4 +1,4 @@
-import {  range } from "lodash";
+import { range } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 
 import { ComputerInfo } from "@/lib/devices/types";
@@ -90,6 +90,7 @@ const applyHeartbeat = (computer: ComputerInfo, body: HeartbeatResponse): Comput
             : undefined;
     const selectedSlot =
         body.deviceData.type === "turtle" ? body.deviceData.selectedSlot : undefined;
+    const fuel = body.deviceData.type === "turtle" ? body.deviceData.fuel : 0;
 
     return {
         ...computer,
@@ -101,5 +102,6 @@ const applyHeartbeat = (computer: ComputerInfo, body: HeartbeatResponse): Comput
         inventory: inventory ?? computer.inventory,
         selectedSlot: selectedSlot ?? computer.selectedSlot,
         locks: body.locks ?? computer.locks,
+        fuel: fuel,
     };
 };

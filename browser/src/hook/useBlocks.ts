@@ -11,15 +11,15 @@ export type Block = {
     lastDetected: number;
 };
 
-const posKey = (pos: Vec3) => `${pos.x},${pos.y},${pos.z}`;
-export const useBlocks = (conn: WsConnection | undefined) => {
+export const vec3Key = (pos: Vec3) => `${pos.x},${pos.y},${pos.z}`;
+export const useBlocks = (conn: WsConnection | undefined): Record<string, Block> => {
     const [blocks, setBlocks] = useState<Record<string, Block>>({});
 
     useEffect(() => {
         (async () => {
             const r = await fetch("http://localhost:8000/api/blocks");
             const blockList = (await r.json()) as Block[];
-            const storedBlocks = Object.fromEntries(blockList.map((v) => [posKey(v.position), v]));
+            const storedBlocks = Object.fromEntries(blockList.map((v) => [vec3Key(v.position), v]));
             setBlocks((blocks) => ({
                 ...storedBlocks,
                 ...blocks,
@@ -43,7 +43,7 @@ export const useBlocks = (conn: WsConnection | undefined) => {
             };
             setBlocks((blocks) => ({
                 ...blocks,
-                [posKey(block.position)]: block,
+                [vec3Key(block.position)]: block,
             }));
         });
 
@@ -55,10 +55,10 @@ export const useBlocks = (conn: WsConnection | undefined) => {
             };
             setBlocks((blocks) => ({
                 ...blocks,
-                [posKey(block.position)]: block,
+                [vec3Key(block.position)]: block,
             }));
         });
     }, [conn]);
 
-    return Array.from(Object.values(blocks));
+    return blocks;
 };
