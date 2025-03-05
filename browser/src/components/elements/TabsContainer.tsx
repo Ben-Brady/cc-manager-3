@@ -22,6 +22,7 @@ function TabContainer<T extends string>({
             <div className="flex px-4 gap-2 w-full">
                 {tabs.map(({ name, icon }) => (
                     <button
+                        key={name}
                         onClick={() => onChangeTab?.(name)}
                         className={classNames(
                             "cursor-pointer  border-2 border-black rounded-[4px] translate-y-1",

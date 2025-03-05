@@ -1,17 +1,16 @@
-import { ComponentProps, FC, memo, useMemo } from "react";
+import { ComponentProps, FC, useMemo } from "react";
 
+import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 import { Face, getModelFaces } from "@/lib/minecraft/model";
+import { THREE } from "@/lib/three";
+import { toVector3 } from "@/lib/three/utils";
 
 import { MeshProps } from "./BlockMesh";
-import { toVector3 } from "@/lib/three/utils";
-import { THREE } from "@/lib/three";
-import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 
 const DynamicBlockMesh: FC<MeshProps> = ({ block, meshProps }) => {
     const faces = useMemo(() => {
         return getModelFaces(block.name, {});
     }, []);
-    console.log({ faces });
 
     if (!faces) return null;
 

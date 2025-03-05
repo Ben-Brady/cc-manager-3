@@ -22,6 +22,11 @@ const TestPage: FC = () => {
             position: { x: -2, y: 0, z: 0 },
             lastDetected: Date.now(),
         },
+        {
+            name: "minecraft:carrots",
+            position: { x: 2, y: 0, z: 0 },
+            lastDetected: Date.now(),
+        },
     ];
 
     return (
@@ -32,10 +37,11 @@ const TestPage: FC = () => {
                     <ambientLight intensity={1} />
                     {/* <MissingBlockMesh block={block} meshProps={{}} /> */}
                     {blocks.map((block) => (
-                        <BlockMesh
+                        <DynamicBlockMesh
                             block={block}
+                            meshProps={{}}
                             isOverlappingTurtle={false}
-                            setTooltip={() => void 0}
+                            texture={undefined}
                         />
                     ))}
                 </Canvas>

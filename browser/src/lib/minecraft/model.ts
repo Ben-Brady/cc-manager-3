@@ -25,7 +25,6 @@ export const getModelFaces = (
 ): Face[] | undefined => {
     name = removeNamespace(name);
     const model = getModel(name, properties);
-    console.log(model);
     const elements = model?.elements;
     if (!elements) return undefined;
     const faces: Face[] = [];
@@ -35,7 +34,6 @@ export const getModelFaces = (
         const from = new THREE.Vector3(...element.from).divideScalar(16).add(baseOffset.clone());
         const to = new THREE.Vector3(...element.to).divideScalar(16).add(baseOffset.clone());
 
-        console.log({ from, to });
         const size = from.sub(to);
         const elementFaces = Object.values(element.faces)
             .map((face): Face | undefined => {
@@ -59,7 +57,11 @@ export const getModelFaces = (
 type ResolvedModelsReturn = ReturnType<typeof modelAssets.getResolvedModelFirst>;
 type MCAssetsModel = ResolvedModelsReturn extends (infer T)[] | undefined ? T : never;
 
-const getModel = (name: string, properties: Record<string, string>): MCAssetsModel | undefined => {
+export const getModel = (
+    name: string,
+    properties: Record<string, string>,
+): MCAssetsModel | undefined => {
+    name = removeNamespace(name);
     const models = modelAssets.getAllResolvedModels({ name, properties }, true);
     const model = models?.[0]?.[0];
     return model;

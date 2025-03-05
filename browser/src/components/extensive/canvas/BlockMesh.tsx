@@ -1,4 +1,4 @@
-import { ComponentProps, FC, useCallback } from "react";
+import { ComponentProps, FC, useMemo } from "react";
 
 import { Block } from "@/hook/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
@@ -7,8 +7,8 @@ import { THREE } from "@/lib/three";
 import { Tooltip } from "./ComputerCanvas";
 import FlowerMesh, { isFlower } from "./FlowerMesh";
 import FullBlockMesh from "./FullBlockMesh";
+import LiquidMesh, { isLiquid } from "./LiquidMesh";
 import MissingBlockMesh from "./MissingBoxMesh";
-import DynamicBlockMesh from "./DynamicBlockMesh";
 
 export type MeshProps = {
     block: Block;
@@ -25,28 +25,33 @@ type BlockMeshProps = {
 
 const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip }) => {
     const texture = useBlockTexture(block.name);
-    console.log({ texture });
-    const onPointerEnter = useCallback(
-        (e: any) => {
-            setTooltip({ text: block.name, x: e.layerX, y: e.layerY });
-            e.stopPropagation();
-        },
-        [block.name, setTooltip],
+    const meshprops: MeshProps = useMemo(
+        () => ({
+            block,
+            isOverlappingTurtle,
+            texture: texture!,
+            meshProps: {
+                onPointerEnter: (e: any) => {
+                    setTooltip({ text: block.name, x: e.layerX, y: e.layerY });
+                    e.stopPropagation();
+                },
+                onPointerOut: (e) => {
+                    setTooltip(undefined);
+                    e.stopPropagation();
+                },
+            },
+        }),
+        [block, isOverlappingTurtle, texture, setTooltip],
     );
-    const onPointerOut = useCallback(() => setTooltip(undefined), [block.name, setTooltip]);
 
     if (block.name === "minecraft:air") return null;
     if (block.name.startsWith("computercraft:turtle")) return null;
     if (texture === LOADING) return null;
-    const meshprops: MeshProps = {
-        block,
-        isOverlappingTurtle,
-        texture,
-        meshProps: { onPointerEnter, onPointerOut },
-    };
 
+    if (!texture) return <MissingBlockMesh {...meshprops} />;
     if (isFlower(block.name)) return <FlowerMesh {...meshprops} />;
-    return <DynamicBlockMesh {...meshprops} />;
+    if (isLiquid(block.name)) return <LiquidMesh {...meshprops} />;
+    return <FullBlockMesh {...meshprops} />;
 };
 
 export default BlockMesh;

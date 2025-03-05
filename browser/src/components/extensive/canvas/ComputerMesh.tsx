@@ -25,12 +25,6 @@ const TURTLE_LEFT_TEXTURE = loadTexture(TURTLE_LEFT_URL);
 const TURTLE_RIGHT_TEXTURE = loadTexture(TURTLE_RIGHT_URL);
 const TURTLE_TOP_TEXTURE = loadTexture(TURTLE_TOP_URL);
 
-const interpolate = (current: number, target: number, speed: number) => {
-    const diff = target - current;
-    const step = diff < 1 ? clamp(diff, -speed, speed) : diff;
-    return current + step;
-};
-
 const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
     const meshRef = useRef<THREE.Mesh>(null);
     const targetPositionRef = useRef<Vec3>(turtle.position);
@@ -53,9 +47,9 @@ const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
                 return;
             }
 
-            mesh.position.x = interpolate(mesh.position.x, targetPos.x, delta * 5);
-            mesh.position.y = interpolate(mesh.position.y, targetPos.y, delta * 5);
-            mesh.position.z = interpolate(mesh.position.z, targetPos.z, delta * 5);
+            mesh.position.x = interpolate(mesh.position.x, targetPos.x, delta * 3);
+            mesh.position.y = interpolate(mesh.position.y, targetPos.y, delta * 3);
+            mesh.position.z = interpolate(mesh.position.z, targetPos.z, delta * 3);
         }
 
         const targetRot = targetRotationRef.current;
@@ -96,6 +90,12 @@ const calcRotation = (facing: undefined | Rotation): THREE.Euler => {
     if (facing === "south") rotation.y = QUARTER_TURN * 1;
     if (facing === "west") rotation.y = QUARTER_TURN * 2;
     return rotation;
+};
+
+const interpolate = (current: number, target: number, speed: number) => {
+    const diff = target - current;
+    const step = diff < 1 ? clamp(diff, -speed, speed) : diff;
+    return current + step;
 };
 
 export default TurtleMesh;
