@@ -7,10 +7,12 @@ import { THREE } from "@/lib/three";
 import { Tooltip } from "./ComputerCanvas";
 import FlowerMesh, { isFlower } from "./FlowerMesh";
 import FullBlockMesh from "./FullBlockMesh";
+import MissingBlockMesh from "./MissingBoxMesh";
+import DynamicBlockMesh from "./DynamicBlockMesh";
 
 export type MeshProps = {
     block: Block;
-    texture: THREE.Texture | undefined;
+    texture: Readonly<THREE.Texture> | undefined;
     isOverlappingTurtle: boolean;
     meshProps: ComponentProps<"mesh">;
 };
@@ -23,6 +25,7 @@ type BlockMeshProps = {
 
 const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip }) => {
     const texture = useBlockTexture(block.name);
+    console.log({ texture });
     const onPointerEnter = useCallback(
         (e: any) => {
             setTooltip({ text: block.name, x: e.layerX, y: e.layerY });
@@ -35,7 +38,6 @@ const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip 
     if (block.name === "minecraft:air") return null;
     if (block.name.startsWith("computercraft:turtle")) return null;
     if (texture === LOADING) return null;
-
     const meshprops: MeshProps = {
         block,
         isOverlappingTurtle,
@@ -44,8 +46,7 @@ const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip 
     };
 
     if (isFlower(block.name)) return <FlowerMesh {...meshprops} />;
-
-    return <FullBlockMesh {...meshprops} />;
+    return <DynamicBlockMesh {...meshprops} />;
 };
 
 export default BlockMesh;

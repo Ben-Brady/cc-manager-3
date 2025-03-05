@@ -60,7 +60,7 @@ const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
 
         const targetRot = targetRotationRef.current;
         if (targetRot) {
-            mesh.rotation.y = lerp(mesh.rotation.y, targetRot.y, delta * 10);
+            mesh.rotation.y = interpolate(mesh.rotation.y, targetRot.y, delta * 10);
         }
     });
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { getBlockTexture } from "@/lib/minecraft/texture";
-import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { loadTexture } from "@/lib/three/loader";
 
@@ -35,6 +34,7 @@ export const useBlockTexture = (name: string): TextureResult => {
 const rewrites = {
     "minecraft:wall_torch": "minecraft:torch",
 } as any;
+
 const rewriteName = (name: string): string => {
     return rewrites[name] ?? name;
 };

@@ -45,6 +45,9 @@ export const getCachedBlockTexture = (name: string): string | undefined => {
 export const getBlockTexture = async (name: string): Promise<string | undefined> => {
     const PREFIX = "minecraft:";
     if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);
+    const BLOCK_PREFIX = "block/";
+    if (name.startsWith(BLOCK_PREFIX)) name = name.slice(BLOCK_PREFIX.length);
+    console.log(name);
 
     if (blockCache.has(name)) return blockCache.get(name)!;
 

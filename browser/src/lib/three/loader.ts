@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import MissingImage from "@/assets/images/missing.png?url";
 
 const loader = new THREE.TextureLoader();
 
@@ -13,4 +14,4 @@ export const loadTexture = (url: string): THREE.Texture => {
     return texture;
 };
 
-export const MISSING_TEXTURE = loadTexture("missing.png");
+export const MISSING_TEXTURE = loadTexture(MissingImage);
