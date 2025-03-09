@@ -12,25 +12,25 @@ const ComputerBanner: FC<{ computer: ComputerInfo }> = ({ computer }) => {
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex justify-between items-center w-full">
-                <span className="font-minecraft capitalize">
-                    {label ? `${label}(${id})` : `ID ${id}`} | {type}
-                </span>
-                <span className="font-minecraft text-center">
-                    {position?.x ?? "?"}, {position?.y ?? "?"}, {position?.z ?? "?"} |{" "}
-                    {computer.type === "turtle" ? computer.facing ?? "?" : "?"}
-                </span>
+            <div className="flex justify-between w-full">
+                <div className="font-minecraft capitalize flex flex-col">
+                    <span>{label ? `${label}(${id})` : `ID ${id}`}</span>
+                    <span>
+                        {type} {computer.type == "turtle" && ` | ${computer.fuel} Fuel`}
+                    </span>
+                </div>
+                <div className="font-minecraft text-center flex flex-col">
+                    <span className="text-center">
+                        {position?.x ?? "?"}, {position?.y ?? "?"}, {position?.z ?? "?"}
+                    </span>
+                    <span className="text-center">
+                        {computer.type === "turtle" ? computer.facing ?? "?" : "?"}
+                    </span>
+                </div>
                 <span className="font-minecraft capitalize text-end">
                     {formatDuration(uptime)} Uptime
                 </span>
             </div>
-            {computer.type == "turtle" && (
-                <div className="flex justify-between items-center w-full">
-                    <span className="font-minecraft capitalize">
-                        {computer.fuel} Fuel
-                    </span>
-                </div>
-            )}
         </div>
     );
 };
