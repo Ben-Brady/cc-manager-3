@@ -6,7 +6,7 @@ import { HeartbeatRequest, HeartbeatResponse } from "./actions/heartbeat";
 import { PositionResponse } from "./actions/position";
 import { RestartRequest } from "./actions/restart";
 import { RotationResponse } from "./actions/rotation";
-import { ScanRequest } from "./actions/scan";
+import { ScanRequest, ScanResponse } from "./actions/scan";
 
 export const RequestPacket = z.object({
     destination: z.union([z.literal("*"), z.number()]),
@@ -32,6 +32,7 @@ export const ResponseBody = z.lazy(() =>
         BlockDetectionResponse,
         RotationResponse,
         PositionResponse,
+        ScanResponse,
     ]),
 );
 export type ResponseBody = z.infer<typeof ResponseBody>;

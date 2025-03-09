@@ -21,6 +21,7 @@
 --- | RotationResponse
 --- | PositionResponse
 --- | InventoryResponse
+--- | ScanResponse
 
 ---@class RestartRequest
 ---@field type "request:restart"
@@ -28,6 +29,14 @@
 ---@class ScanRequest
 ---@field type "request:scan"
 ---@field range number
+
+---@class ScanResponse
+---@field type "response:scan"
+---@field blocks ScanResponseBlock[]
+
+---@class ScanResponseBlock
+---@field block string
+---@field position Vec3
 
 ---@class EvalRequest
 ---@field type "request:eval"

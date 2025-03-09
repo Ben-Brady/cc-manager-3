@@ -47,15 +47,18 @@ export const useBlocks = (conn: WsConnection | undefined): Record<string, Block>
             }));
         });
 
-        conn.listenFor("update:position", signal, (body) => {
-            const block: Block = {
-                name: "minecraft:air",
-                position: body.position,
-                lastDetected: Date.now(),
-            };
+        conn.listenFor("response:scan", signal, (body) => {
+            const newBlocks = body.blocks
+                .map((v) => ({
+                    name: v.block,
+                    position: v.position,
+                    lastDetected: Date.now(),
+                }))
+                .map((block) => [block.name, block]);
+
             setBlocks((blocks) => ({
                 ...blocks,
-                [vec3Key(block.position)]: block,
+                ...Object.fromEntries(newBlocks),
             }));
         });
     }, [conn]);
