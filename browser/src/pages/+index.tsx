@@ -15,7 +15,7 @@ const ListingPage: FC = () => {
     return (
         <div className="flex flex-col gap-4 max-w-128 w-full">
             <div className="flex justify-end items-center gap-4 w-full">
-                <span className="font-minecraft">Blocks {blocks.size}</span>
+                <span className="font-minecraft">{Object.values(blocks).length} Blocks</span>
                 <Button onClick={onPingAll}>Refresh All</Button>
             </div>
             {computers.map((computer) => (
