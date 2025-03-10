@@ -1,6 +1,6 @@
 local exports = {}
 
-exports.enabled = false
+exports.enabled = true
 
 function exports.scan()
     turtle.inspect()

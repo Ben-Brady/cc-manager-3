@@ -44,15 +44,15 @@ export const addSpecificPacketListener = <TType extends ResponsePacketType>(
 };
 
 export const broadcastPacket = (ws: WebSocket, body: RequestBody) => {
-    sendRawPacket(ws, { destination: "*", body });
+    const data = { destination: "*", body } satisfies RequestPacket;
+    const packet = JSON.stringify(data);
+    ws.send(packet);
 };
 
 export const sendPacket = (ws: WebSocket, clientId: number, body: RequestBody) => {
-    sendRawPacket(ws, { destination: clientId, body });
-};
-
-const sendRawPacket = (ws: WebSocket, packet: RequestPacket) => {
-    ws.send(JSON.stringify(packet));
+    const data = { destination: clientId, body } satisfies RequestPacket;
+    const packet = JSON.stringify(data);
+    ws.send(packet);
 };
 
 export const waitForPacket = async <TType extends ResponsePacketType>(

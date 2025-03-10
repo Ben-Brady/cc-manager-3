@@ -1,7 +1,7 @@
 import { FC } from "react";
 
-import { ComputerInfo } from "@/lib/devices/types";
 import { useSecondsSince } from "@/hook/useSecondsSince";
+import { ComputerInfo } from "@/lib/devices/types";
 import { formatDuration } from "@/lib/format";
 
 const ComputerBanner: FC<{ computer: ComputerInfo }> = ({ computer }) => {

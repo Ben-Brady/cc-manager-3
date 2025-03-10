@@ -39,14 +39,17 @@ export const getCachedBlockTexture = (name: string): string | undefined => {
     const PREFIX = "minecraft:";
     if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);
 
-    return blockCache[name];
+    return blockCache.get(name);
 };
 
 export const getBlockTexture = async (name: string): Promise<string | undefined> => {
     const PREFIX = "minecraft:";
     if (name.startsWith(PREFIX)) name = name.slice(PREFIX.length);
+
     const BLOCK_PREFIX = "block/";
     if (name.startsWith(BLOCK_PREFIX)) name = name.slice(BLOCK_PREFIX.length);
+
+    name = blockTextureMap[name] ?? name;
     if (blockCache.has(name)) return blockCache.get(name)!;
 
     const item = blockAtlas.getTextureInfo(name) ?? itemAtlas.getTextureInfo(name);
@@ -84,4 +87,9 @@ const generateImageTexture = (
     );
 
     return canvas.toDataURL();
+};
+
+const blockTextureMap: Record<string, string | undefined> = {
+    grass_block: "grass_top",
+    dirt_path: "grass_path_top",
 };

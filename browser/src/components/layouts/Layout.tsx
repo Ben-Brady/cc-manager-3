@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 
 import Button from "../elements/Button";
 

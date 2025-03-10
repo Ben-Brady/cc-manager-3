@@ -1,14 +1,10 @@
-import Container from "@/components/elements/Container";
-import BlockMesh from "@/components/extensive/canvas/BlockMesh";
-import { vec3ToArray } from "@/components/extensive/canvas/ComputerCanvas";
-import DynamicBlockMesh from "@/components/extensive/canvas/DynamicBlockMesh";
-import FullBlockMesh from "@/components/extensive/canvas/FullBlockMesh";
-import MissingBlockMesh from "@/components/extensive/canvas/MissingBoxMesh";
-import { Block } from "@/hook/useBlocks";
-import { MISSING_TEXTURE } from "@/lib/three/loader";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { FC } from "react";
+
+import Container from "@/components/elements/Container";
+import DynamicBlockMesh from "@/components/extensive/canvas/Block/DynamicBlockMesh";
+import { Block } from "@/hook/useBlocks";
 
 const TestPage: FC = () => {
     const blocks: Block[] = [

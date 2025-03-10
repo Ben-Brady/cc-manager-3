@@ -1,13 +1,12 @@
 import { FC } from "react";
 
-import { TurtleInfo } from "@/src";
-
 import { createTurtleActions } from "@/lib/devices/turtle";
+import { TurtleInfo } from "@/lib/devices/types";
 import { WsConnection } from "@/lib/ws/connection";
-import Button from "@/components/elements/Button";
+
+import CodeInput from "./CodeInput";
 import { InventoryDisplay } from "./InventoryDisplay";
 import TurtleActionController from "./TurtleActionController";
-import CodeInput from "./CodeInput";
 import TurtleMovemementControls from "./TurtleMovemementControls";
 
 const TurtleControls: FC<{ conn: WsConnection; turtle: TurtleInfo }> = ({ conn, turtle }) => {

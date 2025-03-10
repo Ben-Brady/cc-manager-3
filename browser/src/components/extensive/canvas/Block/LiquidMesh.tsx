@@ -1,7 +1,8 @@
 import { FC, memo } from "react";
 
+import { toVec3Array } from "@/lib/three/utils";
+
 import { MeshProps } from "./BlockMesh";
-import { vec3ToArray } from "./ComputerCanvas";
 
 export const isLiquid = (name: string) => name === "minecraft:water" || name === "minecraft:lava";
 
@@ -9,9 +10,10 @@ const LiquidMesh: FC<MeshProps> = memo(({ block, meshProps }) => {
     const isWater = block.name === "minecraft:water";
     const isLava = block.name === "minecraft:lava";
 
-    if (!isWater || !isLava) return null;
+    if (!isWater && !isLava) return null;
+
     return (
-        <mesh position={vec3ToArray(block.position)} {...meshProps}>
+        <mesh position={toVec3Array(block.position)} {...meshProps}>
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial
                 transparent

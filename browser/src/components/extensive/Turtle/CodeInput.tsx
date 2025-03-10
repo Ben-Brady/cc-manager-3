@@ -21,12 +21,14 @@ const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
         setRunning(false);
 
         let value = r.value ? JSON.parse(r.value) : undefined;
-        let repr: string;
-        if (typeof value === "undefined") repr = "nil";
-        else if (typeof value === "string") repr = value;
-        else repr = r.value;
 
-        setOutput((output) => repr);
+        if (typeof value === "undefined") {
+            setOutput("nil");
+        } else if (typeof value === "string") {
+            setOutput(value);
+        } else {
+            setOutput(r.value);
+        }
     };
 
     const onClear = () => {

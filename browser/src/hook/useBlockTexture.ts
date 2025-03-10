@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import * as THREE from "three";
 
 import { getBlockTexture } from "@/lib/minecraft/texture";
-import * as THREE from "three";
 import { loadTexture } from "@/lib/three/loader";
 
 export const LOADING = Symbol();

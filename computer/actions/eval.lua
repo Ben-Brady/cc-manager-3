@@ -3,7 +3,6 @@ local network = require "network"
 
 ---@param body EvalRequest
 return function(body)
-    print(body.code)
     local func = load(body.code, "eval", "t", _G)
     local success, value = pcall(func)
 

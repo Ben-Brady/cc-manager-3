@@ -1,11 +1,11 @@
 import { useFrame } from "@react-three/fiber";
 import { clamp } from "lodash";
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
 import { useNavigate } from "react-router";
 import * as THREE from "three";
 
+import { useUpdatingRef } from "@/hook/useUpdatingRef";
 import { TurtleInfo } from "@/lib/devices/types";
-import { Vec3 } from "@/lib/packet";
 import { Rotation } from "@/lib/packet/generic";
 import { loadTexture } from "@/lib/three/loader";
 
@@ -25,52 +25,61 @@ const TURTLE_LEFT_TEXTURE = loadTexture(TURTLE_LEFT_URL);
 const TURTLE_RIGHT_TEXTURE = loadTexture(TURTLE_RIGHT_URL);
 const TURTLE_TOP_TEXTURE = loadTexture(TURTLE_TOP_URL);
 
-const TurtleMesh: FC<{ turtle: TurtleInfo }> = ({ turtle }) => {
+const TurtleMesh: FC<{
+    turtle: TurtleInfo;
+    onGetId: (value: number) => void;
+}> = ({ turtle, onGetId }) => {
     const meshRef = useRef<THREE.Mesh>(null);
-    const targetPositionRef = useRef<Vec3>(turtle.position);
-    const targetRotationRef = useRef<THREE.Euler>(undefined);
+    const previousRotationRef = useRef<Rotation | null>(null);
+    const turtleRef = useUpdatingRef(turtle);
     const navigate = useNavigate();
 
     useFrame((_, delta) => {
+        const turtle = turtleRef.current;
         const mesh = meshRef.current;
         if (!mesh) return;
 
-        const targetPos = targetPositionRef.current;
-        if (targetPos) {
-            const isInitialPosiiton =
-                mesh.position.x === 0 && mesh.position.y === 0 && mesh.position.x === 0;
-
-            if (isInitialPosiiton) {
-                mesh.position.x = targetPos.x;
-                mesh.position.y = targetPos.y;
-                mesh.position.z = targetPos.z;
-                return;
+        if (turtle.position) {
+            const distanceToTarget = mesh.position.distanceTo(turtle.position);
+            if (distanceToTarget > 4) {
+                mesh.position.x = turtle.position.x;
+                mesh.position.y = turtle.position.y;
+                mesh.position.z = turtle.position.z;
+            } else {
+                const MOVE_SPEED = 5;
+                mesh.position.x = interpolate(
+                    mesh.position.x,
+                    turtle.position.x,
+                    delta * MOVE_SPEED,
+                );
+                mesh.position.y = interpolate(
+                    mesh.position.y,
+                    turtle.position.y,
+                    delta * MOVE_SPEED,
+                );
+                mesh.position.z = interpolate(
+                    mesh.position.z,
+                    turtle.position.z,
+                    delta * MOVE_SPEED,
+                );
             }
-
-            mesh.position.x = interpolate(mesh.position.x, targetPos.x, delta * 3);
-            mesh.position.y = interpolate(mesh.position.y, targetPos.y, delta * 3);
-            mesh.position.z = interpolate(mesh.position.z, targetPos.z, delta * 3);
         }
 
-        const targetRot = targetRotationRef.current;
-        if (targetRot) {
-            mesh.rotation.y = interpolate(mesh.rotation.y, targetRot.y, delta * 10);
-        }
+        const TURN_SPEED = 7.5;
+        const rotation = calcRotation(turtle.facing);
+        mesh.rotation.y = interpolate(mesh.rotation.y, rotation.y, delta * TURN_SPEED);
     });
-
-    useEffect(() => {
-        let position = turtle.position;
-        if (position) targetPositionRef.current = position;
-
-        let rotation = calcRotation(turtle.facing);
-        if (rotation) targetRotationRef.current = rotation;
-    }, [turtle]);
 
     const { position } = turtle;
     if (!position) return null;
 
     return (
-        <mesh ref={meshRef} scale={0.8} onClick={() => navigate(`/turtle/${turtle.id}`)}>
+        <mesh
+            ref={meshRef}
+            scale={0.8}
+            onClick={() => navigate(`/turtle/${turtle.id}`)}
+            onUpdate={(state) => onGetId(state.id)}
+        >
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial map={TURTLE_LEFT_TEXTURE} attach="material-5" />
             <meshStandardMaterial map={TURTLE_BOTTOM_TEXTURE} attach="material-3" />
@@ -94,7 +103,7 @@ const calcRotation = (facing: undefined | Rotation): THREE.Euler => {
 
 const interpolate = (current: number, target: number, speed: number) => {
     const diff = target - current;
-    const step = diff < 1 ? clamp(diff, -speed, speed) : diff;
+    const step = clamp(diff, -speed, speed);
     return current + step;
 };
 

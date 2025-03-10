@@ -2,6 +2,7 @@ import { HeartbeatResponse, ResponsePacket, type DeviceType, type ItemSlot } fro
 import type { BlockDetectionResponse } from "./packet/actions/block";
 import type { PositionResponse } from "./packet/actions/position";
 import type { RotationResponse } from "./packet/actions/rotation";
+import type { ScanResponse } from "./packet/actions/scan";
 import type { LockType, Rotation, Vec3 } from "./packet/generic";
 import { computerMessageListeners } from "./websocket";
 import { writeFileSync, readFileSync, existsSync } from "fs";
@@ -53,9 +54,11 @@ export const getBlocks = (): Block[] => {
 computerMessageListeners.set(":memory:", (data) => {
     const { body, sender } = ResponsePacket.parse(JSON.parse(data));
 
-    console.log("<-- " + body.type);
+    console.log(`<-${sender} ${body.type}`);
     if (body.type === "update:block-detection") {
         applyBlockDetection(body);
+    } else if (body.type === "response:scan") {
+        applyScanResults(body, sender);
     } else if (body.type === "update:rotation") {
         applyRotationUpdate(body, sender);
     } else if (body.type === "update:position") {
@@ -109,4 +112,19 @@ const applyPositionUpdate = (body: PositionResponse, sender: number) => {
     const device = deviceMap.get(sender);
     if (!device) return;
     device.position = body.position;
+};
+
+const applyScanResults = (body: ScanResponse) => {
+    body.blocks.forEach(({ block, position }) => {
+        const key = `${position.x}-${position.y}-${position.z}`;
+        blockMap.set(key, {
+            name: block,
+            position,
+            lastDetected: Date.now(),
+        });
+    });
+
+    const blocks = Array.from(blockMap.values());
+    const json = JSON.stringify(blocks);
+    writeFileSync(BLOCK_FILE, json);
 };

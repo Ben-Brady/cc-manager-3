@@ -3,6 +3,7 @@ import { FC } from "react";
 import ArrowImage from "@/assets/images/arrow.png";
 import ArrowDownImage from "@/assets/images/arrow-down.png";
 import ArrowUpImage from "@/assets/images/arrow-up.png";
+import DotImage from "@/assets/images/dot.png";
 import Button from "@/components/elements/Button";
 import Container from "@/components/elements/Container";
 import { TurtleActions } from "@/lib/devices/turtle";
@@ -11,7 +12,7 @@ const TurtleMovemementControls: FC<{
     actions: TurtleActions;
 }> = ({ actions }) => {
     return (
-        <Container className="grid gap-0.5 grid-cols-3 grid-rows-2 place-content-center place-items-center size-fit">
+        <Container className="grid gap-0.5 grid-cols-3 grid-rows-3 place-content-center place-items-center size-fit">
             <Button className="size-full flex items-center justify-center" onClick={actions.goUp}>
                 <img src={ArrowUpImage} className="size-4 m-0.5" />
             </Button>
@@ -39,19 +40,43 @@ const TurtleMovemementControls: FC<{
             >
                 <img src={ArrowImage} className="size-4" />
             </Button>
+            <Button
+                className="size-full flex items-center justify-center col-span-3"
+                onClick={(ev) => {
+                    const controller = new AbortController();
+                    const { signal } = controller;
+                    ev.currentTarget.requestPointerLock();
+
+                    signal.onabort = () => document.exitPointerLock();
+                    addKeyboardControls(actions, () => controller.abort(), signal);
+                }}
+            >
+                <img src={DotImage} className="size-4" />
+            </Button>
         </Container>
     );
 };
 
-const addKeyboardHandler = (signal: AbortSignal, actions: TurtleActions) => {
+const addKeyboardControls = (actions: TurtleActions, onLeave: () => void, signal: AbortSignal) => {
     let isUpPressed = false;
     let isDownPressed = false;
 
     document.addEventListener(
+        "keydown",
+        (e) => {
+            if (e.key === "ArrowUp") isUpPressed = true;
+            if (e.key === "ArrowDown") isDownPressed = true;
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") e.preventDefault();
+        },
+        { signal },
+    );
+
+    document.addEventListener(
         "keyup",
-        ({ key }) => {
-            if (key === "ArrowUp") isUpPressed = false;
-            if (key === "ArrowDown") isDownPressed = false;
+        (e) => {
+            if (e.key === "ArrowUp") isUpPressed = false;
+            if (e.key === "ArrowDown") isDownPressed = false;
+            if (e.key === "ArrowUp" || e.key === "ArrowDown") e.preventDefault();
         },
         { signal },
     );
@@ -59,13 +84,18 @@ const addKeyboardHandler = (signal: AbortSignal, actions: TurtleActions) => {
     document.addEventListener(
         "keydown",
         (e) => {
-            if (e.key === "ArrowUp") isUpPressed = true;
-            if (e.key === "ArrowDown") isDownPressed = true;
+            const key = e.key;
+            if (key === "Escape") {
+                onLeave();
+                return;
+            }
+            e.preventDefault();
 
+            if (e.key === "w") actions.goForward();
             if (e.key === "s") actions.goBack();
             if (e.key === "a") actions.turnLeft();
             if (e.key === "d") actions.turnRight();
-            if (e.key === "w") actions.goForward();
+
             if (e.key === " ") actions.goUp();
             if (e.key === "Shift") actions.goDown();
 

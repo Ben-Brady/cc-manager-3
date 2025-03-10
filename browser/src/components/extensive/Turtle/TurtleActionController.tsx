@@ -46,7 +46,7 @@ const TurtleActionController: FC<{ actions: TurtleActions }> = ({ actions }) => 
                     title="Refuel"
                     onClick={() => actions.eval([], "turtle.refuel(64)")}
                 />
-                <ActionButton title="Scan" onClick={() => actions.scan(8)} />
+                <ActionButton title="Scan" onClick={() => actions.scan(7)} />
                 <ActionButton title="Restart" onClick={() => actions.restart()} />
             </div>
         </div>

@@ -3,6 +3,7 @@ import { range } from "lodash";
 import { FC } from "react";
 
 import { ItemSlot, UNKNOWN_SLOT } from "@/lib/minecraft/texture";
+
 import InventorySquare from "./InventorySlot";
 import ItemImage from "./ItemImage";
 

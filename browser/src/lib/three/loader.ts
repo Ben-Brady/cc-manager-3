@@ -1,4 +1,5 @@
 import * as THREE from "three";
+
 import MissingImage from "@/assets/images/missing.png?url";
 
 const loader = new THREE.TextureLoader();

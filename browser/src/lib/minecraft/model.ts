@@ -2,10 +2,8 @@ import { AssetsParser, getLoadedBlockstatesStore, getLoadedModelsStore } from "m
 import blockstatesModels from "mc-assets/dist/blockStatesModels.json";
 
 import { THREE } from "../three";
+import {  MISSING_TEXTURE } from "../three/loader";
 import { removeNamespace } from "./utils";
-import { loadTexture, MISSING_TEXTURE } from "../three/loader";
-import { getBlockTexture, getCachedBlockTexture } from "./texture";
-import { Vec3 } from "../packet";
 
 const blockstatesStore = getLoadedBlockstatesStore(blockstatesModels as any);
 const modelsStore = getLoadedModelsStore(blockstatesModels as any);
@@ -34,7 +32,6 @@ export const getModelFaces = (
         const from = new THREE.Vector3(...element.from).divideScalar(16).add(baseOffset.clone());
         const to = new THREE.Vector3(...element.to).divideScalar(16).add(baseOffset.clone());
 
-        const size = from.sub(to);
         const elementFaces = Object.values(element.faces)
             .map((face): Face | undefined => {
                 let texture = face.texture ?? MISSING_TEXTURE;

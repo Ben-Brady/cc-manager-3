@@ -1,16 +1,13 @@
 import classNames from "classnames";
 import { FC } from "react";
+import { useNavigate } from "react-router";
 
 import Button from "@/components/elements/Button";
 import { useSecondsSince } from "@/hook/useSecondsSince";
-import { createTurtleActions } from "@/lib/devices/turtle";
 import { ComputerInfo } from "@/lib/devices/types";
-import { WsConnection } from "@/lib/ws/connection";
 
-import TurtleControls from "./Turtle/TurtleControls";
 import ComputerBanner from "./Turtle/ComputerBanner";
 import { InventoryDisplay } from "./Turtle/InventoryDisplay";
-import { useNavigate } from "react-router";
 
 const TIMEOUT = 5;
 
