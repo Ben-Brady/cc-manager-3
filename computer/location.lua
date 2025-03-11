@@ -13,10 +13,10 @@ end
 
 ---@return Vec3|nil
 function exports.getPosition()
-    -- if position == nil then
-    --     exports.updateFromGPS()
-    -- end
-    exports.updateFromGPS()
+    if position == nil then
+        exports.updateFromGPS()
+    end
+
     return position
 end
 

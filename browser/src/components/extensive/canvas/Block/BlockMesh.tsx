@@ -4,7 +4,7 @@ import { Block } from "@/hook/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 import { THREE } from "@/lib/three";
 
-import { Tooltip } from "../WorldCanvas";
+import { Tooltip } from "../ComputerCanvas";
 import FlowerMesh, { isFlower } from "./FlowerMesh";
 import FullBlockMesh from "./FullBlockMesh";
 import LiquidMesh, { isLiquid } from "./LiquidMesh";

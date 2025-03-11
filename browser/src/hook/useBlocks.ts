@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Vec3 } from "@/lib/packet";
 import { toStringVec3 } from "@/lib/three/utils";
@@ -20,10 +20,7 @@ export const useBlocks = (conn: WsConnection | undefined): Record<string, Block>
             const storedBlocks = Object.fromEntries(
                 blockList.map((v) => [toStringVec3(v.position), v]),
             );
-            setBlocks((blocks) => ({
-                ...storedBlocks,
-                ...blocks,
-            }));
+            setBlocks((blocks) => ({ ...storedBlocks, ...blocks }));
         })();
     }, []);
 
@@ -33,6 +30,9 @@ export const useBlocks = (conn: WsConnection | undefined): Record<string, Block>
         const controller = new AbortController();
         const signal = controller.signal;
 
+        let deferedBlocks: Block[] = [];
+        let timeout: undefined | any = undefined;
+
         conn.listenFor("update:block-detection", signal, (body) => {
             const { block: name, position } = body;
 
@@ -41,10 +41,18 @@ export const useBlocks = (conn: WsConnection | undefined): Record<string, Block>
                 position: position,
                 lastDetected: Date.now(),
             };
-            setBlocks((blocks) => ({
-                ...blocks,
-                [toStringVec3(block.position)]: block,
-            }));
+            deferedBlocks.push(block);
+
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const newBlocks = deferedBlocks.map((block) => [
+                    toStringVec3(block.position),
+                    block,
+                ]);
+                deferedBlocks = [];
+
+                setBlocks((blocks) => ({ ...blocks, ...Object.fromEntries(newBlocks) }));
+            }, 100);
         });
 
         conn.listenFor("response:scan", signal, (body) => {

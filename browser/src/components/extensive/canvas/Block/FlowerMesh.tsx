@@ -10,11 +10,17 @@ const FLOWER_NAMES = [
     "minecraft:dandelion",
     "minecraft:azure_bluet",
     "minecraft:oxeye_daisy",
-    "minecraft:torch",
+    "minecraft:wheat",
     "minecraft:poppy",
     "minecraft:pumpkin_stem",
     "minecraft:cornflower",
+    "minecraft:sugar_cane",
+    "minecraft:melon_stem",
+    "minecraft:tall_grass",
+
+    "minecraft:torch",
     "minecraft:wall_torch",
+    "minecraft:lever",
 ];
 export const isFlower = (name: string) => FLOWER_NAMES.includes(name);
 

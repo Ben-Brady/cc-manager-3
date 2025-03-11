@@ -10,6 +10,7 @@ export type ScanRequest = z.infer<typeof ScanRequest>;
 
 export const ScanResponse = z.object({
     type: z.literal("response:scan"),
+    range: z.number(),
     blocks: z
         .object({
             block: z.string(),

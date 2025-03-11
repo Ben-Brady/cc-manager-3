@@ -1,6 +1,7 @@
 import { FC } from "react";
 
 import DotImage from "@/assets/images/dot.png";
+import ArrowImage from "@/assets/images/arrow.png";
 import Button from "@/components/elements/Button";
 import type { TurtleActions } from "@/lib/devices/turtle";
 
@@ -46,8 +47,24 @@ const TurtleActionController: FC<{ actions: TurtleActions }> = ({ actions }) => 
                     title="Refuel"
                     onClick={() => actions.eval([], "turtle.refuel(64)")}
                 />
-                <ActionButton title="Scan" onClick={() => actions.scan(7)} />
+                <ActionButton title="Scan" onClick={() => actions.scan(5)} />
                 <ActionButton title="Restart" onClick={() => actions.restart()} />
+
+                <div className="flex gap-2">
+                    <span className="font-minecraft w-16 text-right">Equip</span>
+                    <Button
+                        className="h-fit flex justify-center w-10"
+                        onClick={() => actions.eval(["inventory"], "turtle.equipLeft()")}
+                    >
+                        <img src={ArrowImage} className="size-4 -rotate-180" />
+                    </Button>
+                    <Button
+                        className="h-fit flex justify-center w-10"
+                        onClick={() => actions.eval(["inventory"], "turtle.equipRight()")}
+                    >
+                        <img src={ArrowImage} className="size-4" />
+                    </Button>
+                </div>
             </div>
         </div>
     );
@@ -57,7 +74,7 @@ const ActionButton: FC<{ title: string; onClick: () => void }> = ({ title, onCli
     <div className="flex gap-2">
         <span className="font-minecraft w-16 text-right">{title}</span>
         <Button className="h-fit flex justify-center w-10" onClick={onClick}>
-            <img src={DotImage} className="-rotate-90  size-4" />
+            <img src={DotImage} className="  size-4" />
         </Button>
     </div>
 );

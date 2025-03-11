@@ -1,6 +1,7 @@
 local direction = require "monkeypatch.direction"
 local scan = require "monkeypatch.scan"
 local position = require "monkeypatch.position"
+local inventory = require "monkeypatch.inventory"
 
 return {
     patch = function()
@@ -38,5 +39,7 @@ return {
         turtle.back = scan.withMovementScan(turtle.back)
         turtle.up = scan.withMovementScan(turtle.up)
         turtle.down = scan.withMovementScan(turtle.down)
+
+        turtle.select = inventory.withSelectedSlotReport(turtle.select)
     end
 }

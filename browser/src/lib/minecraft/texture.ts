@@ -92,4 +92,21 @@ const generateImageTexture = (
 const blockTextureMap: Record<string, string | undefined> = {
     grass_block: "grass_top",
     dirt_path: "grass_path_top",
+    wall_torch: "torch",
+    glass_pane: "glass",
+
+    cobblestone_stairs: "cobblestone",
+    cobblestone_wall: "cobblestone",
+    cobblestone_slab: "cobblestone",
+
+    stripped_oak_wood: "stripped_oak_log",
+    oak_fence: "oak_planks",
+    oak_stairs: "oak_planks",
+    oak_slab: "oak_planks",
+
+    wheat: "wheat_stage_7",
+    tall_grass: "tall_grass_bottom",
+    oak_door: "oak_door_top",
+
+    white_bed: "white_wool",
 };

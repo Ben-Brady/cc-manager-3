@@ -30,7 +30,6 @@ const TurtleMesh: FC<{
     onGetId: (value: number) => void;
 }> = ({ turtle, onGetId }) => {
     const meshRef = useRef<THREE.Mesh>(null);
-    const previousRotationRef = useRef<Rotation | null>(null);
     const turtleRef = useUpdatingRef(turtle);
     const navigate = useNavigate();
 

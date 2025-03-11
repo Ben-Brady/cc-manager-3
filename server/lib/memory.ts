@@ -58,7 +58,7 @@ computerMessageListeners.set(":memory:", (data) => {
     if (body.type === "update:block-detection") {
         applyBlockDetection(body);
     } else if (body.type === "response:scan") {
-        applyScanResults(body, sender);
+        applyScanResults(body);
     } else if (body.type === "update:rotation") {
         applyRotationUpdate(body, sender);
     } else if (body.type === "update:position") {

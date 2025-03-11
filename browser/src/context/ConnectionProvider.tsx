@@ -24,8 +24,8 @@ export const ConnectionProvider: FC<{ children: ReactNode }> = ({ children }) =>
     const conn = useConnection();
     const blocks = useBlocks(conn);
     const computers = useComputers(conn);
+    const value = { conn, blocks, computers };
     if (!conn) return "Loading...";
 
-    const value = { conn, blocks, computers };
     return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>;
 };

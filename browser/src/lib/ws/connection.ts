@@ -56,7 +56,7 @@ export const connectToProxy = async (url: string): Promise<WsConnection> => {
 
     addPacketListener(ws, {
         callback: (packet, sender) => {
-            console.log(packet);
+            console.log(`<-${sender} ${packet.type}`);
             packetCallbacks.forEach(({ callback, type }) => {
                 if (packet.type !== type) return;
                 callback(packet as any, sender);
@@ -82,7 +82,10 @@ export const connectToProxy = async (url: string): Promise<WsConnection> => {
         close,
         listenFor,
         broadcastPacket: (body) => broadcastPacket(ws, body),
-        sendPacket: (clientId, body) => sendPacket(ws, clientId, body),
+        sendPacket: (clientId, body) => {
+            console.log(`${clientId}-> ${body.type}`);
+            sendPacket(ws, clientId, body);
+        },
         waitForPacket: (type) => waitForPacket(ws, type, controller.signal),
     };
 };

@@ -1,3 +1,4 @@
+import { use } from "react";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 
@@ -12,7 +13,6 @@ type TextureResult = THREE.Texture | undefined | Loading;
 const cache = new Map<string, THREE.Texture>();
 
 export const useBlockTexture = (name: string): TextureResult => {
-    name = rewriteName(name);
     const [texture, setTexture] = useState<TextureResult>(() => cache.get(name) ?? LOADING);
 
     useEffect(() => {
@@ -29,12 +29,4 @@ export const useBlockTexture = (name: string): TextureResult => {
     }, [name, texture]);
 
     return texture;
-};
-
-const rewrites = {
-    "minecraft:wall_torch": "minecraft:torch",
-} as any;
-
-const rewriteName = (name: string): string => {
-    return rewrites[name] ?? name;
 };
