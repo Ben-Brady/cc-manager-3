@@ -34,6 +34,14 @@ const WorldCanvas: FC<{
 
     return (
         <>
+            <div className="flex flex-col">
+                <span>Total Blocks={Object.values(blocks).length} </span>
+                <span>
+                    Total Blocks (No Air)=
+                    {Object.values(blocks).filter((v) => v.name !== "minecraft:air").length}{" "}
+                </span>
+                <span>Rendered Blocks={blockList.length}</span>
+            </div>
             <Container className="!p-0 w-full h-96 relative">
                 {tooltip && (
                     <Container
@@ -46,7 +54,7 @@ const WorldCanvas: FC<{
                 <Canvas>
                     <AdaptiveDpr pixelated />
                     <ambientLight />
-                    <fog attach="fog" args={["#c6c6c6", VIEW_DISTANCE - 2, VIEW_DISTANCE]} />
+                    <fog attach="fog" args={["#c6c6c6", VIEW_DISTANCE * 0.8, VIEW_DISTANCE]} />
                     <TurtleCamera targetId={turtleMeshId} />
                     {blockList.map((block) => (
                         <BlockMesh
@@ -70,14 +78,6 @@ const WorldCanvas: FC<{
                         ))}
                 </Canvas>
             </Container>
-            <div className="flex flex-col">
-                <span>Total Blocks={Object.values(blocks).length} </span>
-                <span>
-                    Total Blocks (No Air)=
-                    {Object.values(blocks).filter((v) => v.name !== "minecraft:air").length}{" "}
-                </span>
-                <span>Rendered Blocks={blockList.length}</span>
-            </div>
         </>
     );
 };

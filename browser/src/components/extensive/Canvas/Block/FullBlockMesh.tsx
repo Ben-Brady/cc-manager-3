@@ -19,18 +19,17 @@ const FullBlockMesh: FC<MeshProps> = memo(({ texture, block, meshProps }) => {
     );
 });
 
-const hasTransparency = (name: string) =>
+export const hasTransparency = (name: string) =>
     name.includes("glass") ||
     name.includes("leaves") ||
     name.includes("door") ||
-    ["minecraft:bell"].includes(name);
+    ["minecraft:bell", "minecraft:seagrass"].includes(name);
 
 const TRANSPARENT_BLOCKS = [
     "minecraft:stone",
     "minecraft:granite",
     "minecraft:andesite",
     "minecraft:tuff",
-    "minecraft:dirt",
     "minecraft:deepslate",
 ];
 export default FullBlockMesh;

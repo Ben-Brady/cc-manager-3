@@ -7,8 +7,6 @@ export const calculateOccludedBlocks = (
     blockTable: Record<string, Block>,
     position: Vec3 | undefined,
 ): Block[] => {
-    const KEY = `calculateOccludedBlocks(#${Object.values(blockTable).length})`;
-    console.time(KEY);
     const coverredCache = new Map<string, boolean>();
     const isCovered = (position: Vec3) => {
         const key = toStringVec3(position);
@@ -45,11 +43,10 @@ export const calculateOccludedBlocks = (
     }
     blocks = blocks.filter((v) => !shouldCullBlock(v.position));
 
-    console.timeEnd(KEY);
     return blocks;
 };
 
-export const VIEW_DISTANCE = 16;
+export const VIEW_DISTANCE = 32 ;
 
 const distance = (a: Vec3, b: Vec3) => {
     const x = Math.abs(a.x - b.x);
