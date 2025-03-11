@@ -1,15 +1,14 @@
-import { ComponentProps, FC, memo, useMemo } from "react";
+import { ComponentProps, FC, useMemo } from "react";
 
 import { Block } from "@/hook/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 import { THREE } from "@/lib/three";
 
-import { Tooltip } from "../ComputerCanvas";
+import { Tooltip } from "../WorldCanvas";
 import FlowerMesh, { isFlower } from "./FlowerMesh";
 import FullBlockMesh from "./FullBlockMesh";
 import LiquidMesh, { isLiquid } from "./LiquidMesh";
 import MissingBlockMesh from "./MissingBoxMesh";
-import { isEqualVec3 } from "@/lib/packet/generic";
 
 export type MeshProps = {
     block: Block;
