@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { FC } from "react";
 
 import Container from "@/components/elements/Container";
-import DynamicBlockMesh from "@/components/extensive/canvas/Block/DynamicBlockMesh";
+import DynamicBlockMesh from "@/components/extensive/Canvas/Block/DynamicBlockMesh";
 import { Block } from "@/hook/useBlocks";
 
 const TestPage: FC = () => {

@@ -1,5 +1,5 @@
-import { isFlower } from "@/components/extensive/canvas/Block/FlowerMesh";
-import { isLiquid } from "@/components/extensive/canvas/Block/LiquidMesh";
+import { isFlower } from "@/components/extensive/Canvas/Block/FlowerMesh";
+import { isLiquid } from "@/components/extensive/Canvas/Block/LiquidMesh";
 
 const cache = new Map<string, boolean>();
 export const isBlockOccluding = (name: string): boolean => {

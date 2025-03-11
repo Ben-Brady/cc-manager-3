@@ -45,7 +45,7 @@ const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip 
         [block, isOverlappingTurtle, texture, setTooltip],
     );
 
-    if (block.name === "minecraft:air") return null;
+    if (block.name === "minecraft:air") return <MissingBlockMesh {...meshprops} />;
     if (block.name.startsWith("computercraft:turtle")) return null;
     if (texture === LOADING) return null;
 

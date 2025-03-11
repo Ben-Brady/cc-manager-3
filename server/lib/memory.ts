@@ -55,6 +55,7 @@ computerMessageListeners.set(":memory:", (data) => {
     const { body, sender } = ResponsePacket.parse(JSON.parse(data));
 
     console.log(`<-${sender} ${body.type}`);
+    console.trace(body);
     if (body.type === "update:block-detection") {
         applyBlockDetection(body);
     } else if (body.type === "response:scan") {

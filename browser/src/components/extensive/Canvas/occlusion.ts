@@ -15,6 +15,7 @@ export const calculateOccludedBlocks = (
 
         const block = blockTable[key];
         const occluding = !block || isBlockOccluding(block.name);
+        // const occluding = block && isBlockOccluding(block.name);
         coverredCache.set(key, occluding);
         return occluding;
     };

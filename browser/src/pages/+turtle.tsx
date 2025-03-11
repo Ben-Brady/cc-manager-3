@@ -1,8 +1,8 @@
 import { FC, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import CanvasControls from "@/components/extensive/canvas/TurtleControls";
-import WorldCanvas from "@/components/extensive/canvas/WorldCanvas";
+import CanvasControls from "@/components/extensive/Canvas/TurtleControls";
+import WorldCanvas from "@/components/extensive/Canvas/WorldCanvas";
 import { useConnectionContext } from "@/context/ConnectionProvider";
 import { TurtleInfo } from "@/lib/devices/types";
 
