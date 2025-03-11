@@ -7,7 +7,9 @@ local function reconnect()
     while true do
         local WS_SERVER = "ws://127.0.0.1:8000/ws/computer"
         ws, error = http.websocket(WS_SERVER)
-        if ws ~= false then return end
+        if ws ~= false then
+            return
+        end
 
         utils.log("Reconnecting...")
         sleep(3)
@@ -20,13 +22,17 @@ end
 
 ---@return RequestBody | nil
 function exports.getNextPacket()
-    local success, msg = pcall(function() return ws.receive() end)
+    local success, msg = pcall(function()
+        return ws.receive()
+    end)
     if not success then
         reconnect()
         return
     end
 
-    if msg == nil then return end
+    if msg == nil then
+        return
+    end
     ---@cast msg string
 
     local packet = textutils.unserialiseJSON(msg)
@@ -48,11 +54,15 @@ function exports.broadcastPacket(body)
     ---@type ResponsePacket
     local packet = {
         sender = os.getComputerID(),
-        body = body,
+        body = body
     }
 
-    local json = textutils.serializeJSON(packet, { allow_repetitions = true })
-    local success = pcall(function() ws.send(json, false) end)
+    local json = textutils.serializeJSON(packet, {
+        allow_repetitions = true
+    })
+    local success = pcall(function()
+        ws.send(json, false)
+    end)
     if success then
         utils.log("-> " .. body.type)
     else
