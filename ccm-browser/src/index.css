@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "minecraft";
+    src: url("/fonts/minecraft-regular.woff");
+}
+
+@font-face {
+    font-family: "minecraft";
+    font-weight: 700;
+    src: url("/fonts/minecraft-bold.woff");
+}
+
+@font-face {
+    font-family: "minecraft";
+    font-style: italic;
+    src: url("/fonts/minecraft-italic.woff");
+}
+
+@font-face {
+    font-family: "minecraft";
+    font-weight: 700;
+    font-style: italic;
+    src: url("/fonts/minecraft-bold-italic.woff");
+}
