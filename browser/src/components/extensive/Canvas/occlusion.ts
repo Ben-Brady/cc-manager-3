@@ -7,6 +7,8 @@ export const calculateOccludedBlocks = (
     blockTable: Record<string, Block>,
     position: Vec3 | undefined,
 ): Block[] => {
+    const KEY = `calculateOccludedBlocks(#${Object.values(blockTable).length})`;
+    console.time(KEY);
     const coverredCache = new Map<string, boolean>();
     const isCovered = (position: Vec3) => {
         const key = toStringVec3(position);
@@ -21,12 +23,12 @@ export const calculateOccludedBlocks = (
     };
 
     const isBlockSurrounded = (position: Vec3) =>
-        isCovered({ ...position, x: position.x + 1 }) &&
-        isCovered({ ...position, x: position.x - 1 }) &&
-        isCovered({ ...position, y: position.y + 1 }) &&
-        isCovered({ ...position, y: position.y - 1 }) &&
-        isCovered({ ...position, z: position.z + 1 }) &&
-        isCovered({ ...position, z: position.z - 1 });
+        isCovered({ x: position.x, y: position.y - 1, z: position.z }) &&
+        isCovered({ x: position.x, y: position.y + 1, z: position.z }) &&
+        isCovered({ x: position.x + 1, y: position.y, z: position.z }) &&
+        isCovered({ x: position.x - 1, y: position.y, z: position.z }) &&
+        isCovered({ x: position.x, y: position.y, z: position.z + 1 }) &&
+        isCovered({ x: position.x, y: position.y, z: position.z - 1 });
 
     const shouldCullBlock = (position: Vec3) => {
         const block = blockTable[toStringVec3(position)];
@@ -43,6 +45,7 @@ export const calculateOccludedBlocks = (
     }
     blocks = blocks.filter((v) => !shouldCullBlock(v.position));
 
+    console.timeEnd(KEY);
     return blocks;
 };
 
