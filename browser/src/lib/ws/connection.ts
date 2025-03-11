@@ -57,7 +57,6 @@ export const connectToProxy = async (url: string): Promise<WsConnection> => {
     addPacketListener(ws, {
         callback: (packet, sender) => {
             console.log(`<-${sender} ${packet.type}`);
-            console.trace(packet);
             packetCallbacks.forEach(({ callback, type }) => {
                 if (packet.type !== type) return;
                 callback(packet as any, sender);
