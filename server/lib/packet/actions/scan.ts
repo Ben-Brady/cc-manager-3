@@ -10,11 +10,12 @@ export type ScanRequest = z.infer<typeof ScanRequest>;
 
 export const ScanResponse = z.object({
     type: z.literal("response:scan"),
+    position: Vec3.optional(),
     range: z.number(),
     blocks: z
         .object({
-            block: z.string(),
-            position: Vec3,
+            name: z.string(),
+            offset: Vec3,
         })
         .array(),
 });

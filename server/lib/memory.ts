@@ -116,14 +116,41 @@ const applyPositionUpdate = (body: PositionResponse, sender: number) => {
 };
 
 const applyScanResults = (body: ScanResponse) => {
-    body.blocks.forEach(({ block, position }) => {
-        const key = `${position.x}-${position.y}-${position.z}`;
+    const { range, position } = body;
+    if (!position) return;
+
+    for (let x = 1 - range; x < range; x++) {
+        for (let y = 1 - range; y < body.range; y++) {
+            for (let z = 1 - range; z < range; z++) {
+                const blockPos = {
+                    x: position.x + x,
+                    y: position.y + y,
+                    z: position.z + z,
+                };
+
+                const key = createPosKey(blockPos);
+                blockMap.set(key, {
+                    name: "minecraft:air",
+                    lastDetected: Date.now(),
+                    position: blockPos,
+                });
+            }
+        }
+    }
+
+    for (const block of body.blocks) {
+        const blockPos = {
+            x: position.x + block.offset.x,
+            y: position.y + block.offset.y,
+            z: position.z + block.offset.z,
+        };
+        const key = createPosKey(blockPos);
         blockMap.set(key, {
-            name: block,
-            position,
+            name: block.name,
             lastDetected: Date.now(),
+            position: blockPos,
         });
-    });
+    }
 
     const blocks = Array.from(blockMap.values());
     const json = JSON.stringify(blocks);

@@ -32,11 +32,13 @@
 
 ---@class ScanResponse
 ---@field type "response:scan"
+---@field range number
+---@field position Vec3|nil
 ---@field blocks ScanResponseBlock[]
 
 ---@class ScanResponseBlock
----@field block string
----@field position Vec3
+---@field name string
+---@field offset Vec3
 
 ---@class EvalRequest
 ---@field type "request:eval"

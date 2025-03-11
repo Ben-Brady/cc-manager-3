@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Vec3 } from "@/lib/packet";
 import { toStringVec3 } from "@/lib/three/utils";
@@ -56,16 +56,48 @@ export const useBlocks = (conn: WsConnection | undefined): Record<string, Block>
         });
 
         conn.listenFor("response:scan", signal, (body) => {
-            const newBlocks = body.blocks
-                .map((v) => ({
-                    name: v.block,
-                    position: v.position,
+            const { position, range } = body;
+            if (!position) return;
+
+            const newBlocks: Record<string, Block> = {};
+
+            for (const block of body.blocks) {
+                const blockPos = {
+                    x: position.x + block.offset.x,
+                    y: position.y + block.offset.y,
+                    z: position.z + block.offset.z,
+                };
+                const key = toStringVec3(blockPos);
+                newBlocks[key] = {
+                    name: block.name,
                     lastDetected: Date.now(),
-                }))
-                .map((block) => [toStringVec3(block.position), block]);
+                    position: blockPos,
+                };
+            }
+
+            const airBlocks: Record<string, Block> = {};
+            for (let x = 1 - range; x < range; x++) {
+                for (let y = 1 - range; y < body.range; y++) {
+                    for (let z = 1 - range; z < range; z++) {
+                        const blockPos = {
+                            x: position.x + x,
+                            y: position.y + y,
+                            z: position.z + z,
+                        };
+                        const key = toStringVec3(blockPos);
+
+                        airBlocks[key] = {
+                            name: "minecraft:air",
+                            lastDetected: Date.now(),
+                            position: blockPos,
+                        };
+                    }
+                }
+            }
             setBlocks((blocks) => ({
                 ...blocks,
-                ...Object.fromEntries(newBlocks),
+                ...airBlocks,
+                ...newBlocks,
             }));
         });
     }, [conn]);
