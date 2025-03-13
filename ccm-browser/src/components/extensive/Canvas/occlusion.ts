@@ -46,7 +46,7 @@ export const calculateOccludedBlocks = (
     return blocks;
 };
 
-export const VIEW_DISTANCE = 12;
+export const VIEW_DISTANCE = 16;
 
 const distance = (a: Vec3, b: Vec3) => {
     const x = Math.abs(a.x - b.x);

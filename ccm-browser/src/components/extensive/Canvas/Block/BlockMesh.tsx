@@ -1,4 +1,4 @@
-import { ComponentProps, FC, useMemo } from "react";
+import { ComponentProps, FC, memo, useMemo } from "react";
 
 import { Block } from "@/hook/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
@@ -17,38 +17,31 @@ export type MeshProps = {
 };
 
 type BlockMeshProps = {
+    texture: THREE.Texture | undefined;
     block: Block;
     setTooltip: (tooltip: Tooltip | undefined) => void;
 };
 
-const BlockMesh: FC<BlockMeshProps> = ({ block, setTooltip }) => {
-    const texture = useBlockTexture(block.name);
-    const meshprops: MeshProps = useMemo(
-        () => ({
-            block,
-            texture: texture!,
-            meshProps: {
-                onPointerEnter: (e: any) => {
-                    setTooltip({ text: block.name, x: e.layerX, y: e.layerY });
-                    e.stopPropagation();
-                },
-                onPointerOut: (e) => {
-                    setTooltip(undefined);
-                    e.stopPropagation();
-                },
+const BlockMesh: FC<BlockMeshProps> = memo(function BlockMesh({ texture, block, setTooltip }) {
+    const meshprops: MeshProps = {
+        block,
+        texture: texture!,
+        meshProps: {
+            onPointerEnter: (e: any) => {
+                setTooltip({ text: block.name, x: e.layerX, y: e.layerY });
+                e.stopPropagation();
             },
-        }),
-        [block, texture, setTooltip],
-    );
-
-    if (block.name === "minecraft:air") return <MissingBlockMesh {...meshprops} />;
-    if (block.name.startsWith("computercraft:turtle")) return null;
-    if (texture === LOADING) return null;
+            onPointerOut: (e) => {
+                setTooltip(undefined);
+                e.stopPropagation();
+            },
+        },
+    };
 
     if (isLiquid(block.name)) return <LiquidMesh {...meshprops} />;
     if (!texture) return <MissingBlockMesh {...meshprops} />;
     if (isFlower(block.name)) return <FlowerMesh {...meshprops} />;
     return <FullBlockMesh {...meshprops} />;
-};
+});
 
 export default BlockMesh;

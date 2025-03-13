@@ -1,21 +1,16 @@
 import { Canvas } from "@react-three/fiber";
-import { FC, Suspense, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 
 import Container from "@/components/elements/Container";
 import { Block } from "@/hook/useBlocks";
-import { ComputerInfo, TurtleInfo } from "@/lib/devices/types";
-import { isEqualVec3, Vec3 } from "@/lib/packet/generic";
-import { toStringVec3, toVec3Array } from "@/lib/three/utils";
+import { ComputerInfo } from "@/lib/devices/types";
 
-import BlockMesh from "./Block/BlockMesh";
 import TurtleMesh from "./TurtleMesh";
 import TurtleCamera from "./TurtleCamera";
-import { isBlockOccluding } from "@/lib/minecraft/occluding";
-import { AdaptiveDpr } from "@react-three/drei";
+import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
 import { calculateOccludedBlocks, VIEW_DISTANCE } from "./occlusion";
-import MissingBlockMesh from "./Block/MissingBoxMesh";
-import { MISSING_TEXTURE } from "@/lib/three/loader";
 import PlayerMesh from "./PlayerMesh";
+import BlockGroupMeshes from "./Block/BlockGroupMeshes";
 
 export type Tooltip = {
     x: number;
@@ -34,6 +29,7 @@ const WorldCanvas: FC<{
         () => calculateOccludedBlocks(blocks, computers.find((v) => v.id === computerId)?.position),
         [computerId, blocks],
     );
+    const blockGroups = useMemo(() => groupBlocks(blockList), [blockList]);
 
     return (
         <>
@@ -54,17 +50,15 @@ const WorldCanvas: FC<{
                         {tooltip.text}
                     </Container>
                 )}
-                <Canvas>
+                <Canvas dpr={1}>
                     <AdaptiveDpr pixelated />
                     <ambientLight />
-                    <fog attach="fog" args={["#c6c6c6", VIEW_DISTANCE * 0.8, VIEW_DISTANCE]} />
+                    <fog attach="fog" args={["#c6c6c6", VIEW_DISTANCE - 2, VIEW_DISTANCE]} />
+                    <PerformanceMonitor onChange={(api) => console.log(`${api.fps}FPS`)} />
                     <TurtleCamera targetId={targetId} />
-                    {blockList.map((block) => (
-                        <BlockMesh
-                            key={toStringVec3(block.position) + block.name}
-                            block={block}
-                            setTooltip={setTooltip}
-                        />
+
+                    {blockGroups.map((group) => (
+                        <BlockGroupMeshes key={group.name} group={group} setTooltip={setTooltip} />
                     ))}
                     {computers
                         .filter((v) => v.type === "pocket")
@@ -97,6 +91,20 @@ const WorldCanvas: FC<{
             </Container>
         </>
     );
+};
+
+const groupBlocks = (blocks: Block[]): BlockGroup[] => {
+    const groups: Record<string, BlockGroup> = {};
+
+    for (const block of blocks) {
+        if (!(block.name in groups)) {
+            groups[block.name] = { name: block.name, blocks: [] };
+        }
+
+        groups[block.name].blocks.push(block);
+    }
+
+    return Object.values(groups);
 };
 
 export default WorldCanvas;
