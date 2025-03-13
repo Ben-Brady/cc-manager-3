@@ -1,4 +1,5 @@
 local utils = require "utils"
+local loop = require "loop"
 local exports = {}
 
 local ws
@@ -51,23 +52,25 @@ end
 
 ---@param body ResponseBody
 function exports.broadcastPacket(body)
-    ---@type ResponsePacket
-    local packet = {
-        sender = os.getComputerID(),
-        body = body
-    }
+    loop.startThread(function()
+        ---@type ResponsePacket
+        local packet = {
+            sender = os.getComputerID(),
+            body = body
+        }
 
-    local json = textutils.serializeJSON(packet, {
-        allow_repetitions = true
-    })
-    local success = pcall(function()
-        ws.send(json, false)
+        local json = textutils.serializeJSON(packet, {
+            allow_repetitions = true
+        })
+        local success = pcall(function()
+            ws.send(json, false)
+        end)
+        if success then
+            utils.log("-> " .. body.type)
+        else
+            reconnect()
+        end
     end)
-    if success then
-        utils.log("-> " .. body.type)
-    else
-        reconnect()
-    end
 end
 
 return exports

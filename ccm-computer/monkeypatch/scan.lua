@@ -1,7 +1,7 @@
 local network = require "network"
-local autoscan = require "autoscan"
-local rotation = require "rotation"
-local location = require "location"
+local settings = require "settings"
+local rotation = require "device.rotation"
+local location = require "device.location"
 local heartbeat = require "actions.heartbeat"
 
 local exports = {}
@@ -12,15 +12,53 @@ local function getPositionFromDirection(detectDirection)
     local pos = location.getPosition()
     local facing = rotation.getRotation()
 
-    if not pos then return nil end
+    if not pos then
+        return nil
+    end
 
-    if (detectDirection == "up") then return { x = pos.x, y = pos.y + 1, z = pos.z } end
-    if (detectDirection == "down") then return { x = pos.x, y = pos.y - 1, z = pos.z } end
+    if (detectDirection == "up") then
+        return {
+            x = pos.x,
+            y = pos.y + 1,
+            z = pos.z
+        }
+    end
+    if (detectDirection == "down") then
+        return {
+            x = pos.x,
+            y = pos.y - 1,
+            z = pos.z
+        }
+    end
 
-    if facing == "east" then return { x = pos.x + 1, y = pos.y, z = pos.z } end
-    if facing == "west" then return { x = pos.x - 1, y = pos.y, z = pos.z } end
-    if facing == "north" then return { x = pos.x, y = pos.y, z = pos.z - 1 } end
-    if facing == "south" then return { x = pos.x, y = pos.y, z = pos.z + 1 } end
+    if facing == "east" then
+        return {
+            x = pos.x + 1,
+            y = pos.y,
+            z = pos.z
+        }
+    end
+    if facing == "west" then
+        return {
+            x = pos.x - 1,
+            y = pos.y,
+            z = pos.z
+        }
+    end
+    if facing == "north" then
+        return {
+            x = pos.x,
+            y = pos.y,
+            z = pos.z - 1
+        }
+    end
+    if facing == "south" then
+        return {
+            x = pos.x,
+            y = pos.y,
+            z = pos.z + 1
+        }
+    end
     return nil
 end
 
@@ -54,7 +92,9 @@ end
 function exports.withTurnScan(func)
     return function()
         local success = func()
-        if autoscan.enabled then turtle.inspect() end
+        if settings.autoscan then
+            turtle.inspect()
+        end
         return success
     end
 end
@@ -62,8 +102,10 @@ end
 function exports.withMovementScan(func)
     return function()
         local success = func()
-        if autoscan.enabled then
-            autoscan.scan()
+        if settings.autoscan then
+            turtle.inspect()
+            turtle.inspectUp()
+            turtle.inspectDown()
         end
         return success
     end
@@ -75,7 +117,7 @@ function exports.withDigUpdate(func, side)
     return function(v)
         local success, msg = func(v)
 
-        if autoscan.enabled then
+        if settings.autoscan then
             if side == "up" then
                 turtle.inspectUp()
             elseif side == "down" then

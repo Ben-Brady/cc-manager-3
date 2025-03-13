@@ -1,4 +1,4 @@
----@param info inspectInfo | nil | unknown
+---@param info inspectInfo | nil | any
 local function isOre(info)
     if info == nil then return false end
     if info.name == nil then return false end

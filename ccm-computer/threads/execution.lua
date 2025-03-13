@@ -1,5 +1,5 @@
 local tasks  = require "tasks"
-local locks  = require "tasks.locks"
+local locks  = require "locks"
 local loop   = require "loop"
 local utils  = require "utils"
 

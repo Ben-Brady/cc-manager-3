@@ -18,7 +18,7 @@ const CanvasPage: FC = () => {
 
     return (
         <div className="flex flex-col gap-4 max-w-192 items-center w-full">
-            <WorldCanvas turtle={turtle} computers={computers} blocks={blocks} />
+            <WorldCanvas computerId={id} computers={computers} blocks={blocks} />
 
             <CanvasControls conn={conn} turtle={turtle} />
         </div>

@@ -12,7 +12,7 @@ const TurtleCamera: FC<{ targetId: number | undefined }> = ({ targetId }) => {
         if (!turtleMesh) return;
 
         const X_OFFSET = 5;
-        const Y_OFFSET = 4;
+        const Y_OFFSET = 3;
         let { x, y, z } = turtleMesh.position;
         state.camera.position.setY(y + Y_OFFSET);
 

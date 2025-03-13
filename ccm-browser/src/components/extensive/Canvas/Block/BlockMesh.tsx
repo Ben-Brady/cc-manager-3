@@ -13,22 +13,19 @@ import MissingBlockMesh from "./MissingBoxMesh";
 export type MeshProps = {
     block: Block;
     texture: Readonly<THREE.Texture> | undefined;
-    isOverlappingTurtle: boolean;
     meshProps: ComponentProps<"mesh">;
 };
 
 type BlockMeshProps = {
     block: Block;
-    isOverlappingTurtle: boolean;
     setTooltip: (tooltip: Tooltip | undefined) => void;
 };
 
-const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip }) => {
+const BlockMesh: FC<BlockMeshProps> = ({ block, setTooltip }) => {
     const texture = useBlockTexture(block.name);
     const meshprops: MeshProps = useMemo(
         () => ({
             block,
-            isOverlappingTurtle,
             texture: texture!,
             meshProps: {
                 onPointerEnter: (e: any) => {
@@ -41,7 +38,7 @@ const BlockMesh: FC<BlockMeshProps> = ({ block, isOverlappingTurtle, setTooltip 
                 },
             },
         }),
-        [block, isOverlappingTurtle, texture, setTooltip],
+        [block, texture, setTooltip],
     );
 
     if (block.name === "minecraft:air") return <MissingBlockMesh {...meshprops} />;

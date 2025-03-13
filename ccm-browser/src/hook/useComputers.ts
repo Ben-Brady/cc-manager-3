@@ -78,7 +78,7 @@ const applyHeartbeat = (computer: ComputerInfo, body: HeartbeatResponse): Comput
             type: computer.type,
             label: body.label,
             lastUpdated: Date.now(),
-            position: computer.position ?? body.position,
+            position: body.position ?? computer.position,
             uptime: Math.floor(body.uptime),
             locks: body.locks,
         };

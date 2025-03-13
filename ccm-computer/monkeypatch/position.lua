@@ -1,5 +1,5 @@
-local location = require "location"
-local rotation = require "rotation"
+local location = require "device.location"
+local rotation = require "device.rotation"
 local network = require "network"
 
 local exports = {}
@@ -18,19 +18,75 @@ function exports.withPositionUpdate(func, movement)
         ---@type Vec3 | nil
         local offset = (function()
             if movement == "up" then
-                return { x = 0, y = 1, z = 0 }
+                return {
+                    x = 0,
+                    y = 1,
+                    z = 0
+                }
             elseif movement == "down" then
-                return { x = 0, y = -1, z = 0 }
+                return {
+                    x = 0,
+                    y = -1,
+                    z = 0
+                }
             elseif movement == "forward" then
-                if facing == "east" then return { x = 1, y = 0, z = 0 } end
-                if facing == "west" then return { x = -1, y = 0, z = 0 } end
-                if facing == "north" then return { x = 0, y = 0, z = -1 } end
-                if facing == "south" then return { x = 0, y = 0, z = 1 } end
+                if facing == "east" then
+                    return {
+                        x = 1,
+                        y = 0,
+                        z = 0
+                    }
+                end
+                if facing == "west" then
+                    return {
+                        x = -1,
+                        y = 0,
+                        z = 0
+                    }
+                end
+                if facing == "north" then
+                    return {
+                        x = 0,
+                        y = 0,
+                        z = -1
+                    }
+                end
+                if facing == "south" then
+                    return {
+                        x = 0,
+                        y = 0,
+                        z = 1
+                    }
+                end
             elseif movement == "back" then
-                if facing == "east" then return { x = -1, y = 0, z = 0 } end
-                if facing == "west" then return { x = 1, y = 0, z = 0 } end
-                if facing == "north" then return { x = 0, y = 0, z = 1 } end
-                if facing == "south" then return { x = 0, y = 0, z = -1 } end
+                if facing == "east" then
+                    return {
+                        x = -1,
+                        y = 0,
+                        z = 0
+                    }
+                end
+                if facing == "west" then
+                    return {
+                        x = 1,
+                        y = 0,
+                        z = 0
+                    }
+                end
+                if facing == "north" then
+                    return {
+                        x = 0,
+                        y = 0,
+                        z = 1
+                    }
+                end
+                if facing == "south" then
+                    return {
+                        x = 0,
+                        y = 0,
+                        z = -1
+                    }
+                end
             end
             return nil
         end)()

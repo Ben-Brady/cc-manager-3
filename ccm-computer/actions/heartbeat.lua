@@ -1,11 +1,11 @@
-local network   = require "network"
-local device    = require "device"
-local inventory = require "turtle.inventory"
-local location  = require "location"
+local network = require "network"
+local device = require "device.type"
+local inventory = require "device.inventory"
+local location = require "device.location"
 
-local start     = os.epoch("utc")
+local start = os.epoch("utc")
 return function()
-    local locks = require "tasks.locks"
+    local locks = require "locks"
 
     local uptimeMs = os.epoch("utc") - start
     local uptime = uptimeMs / 1000
@@ -17,7 +17,9 @@ return function()
 
     local deviceType = device.getDeviceType()
     ---@type HeartbeatDeviceData
-    local deviceData = { type = deviceType }
+    local deviceData = {
+        type = deviceType
+    }
     if deviceData.type == "turtle" then
         deviceData.inventory = inventory.getInventory()
         deviceData.selectedSlot = turtle.getSelectedSlot()
@@ -36,6 +38,6 @@ return function()
         uptime = uptime,
         deviceData = deviceData,
         position = position,
-        locks = usedLocks,
+        locks = usedLocks
     })
 end
