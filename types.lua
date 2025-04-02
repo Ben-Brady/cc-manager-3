@@ -2,7 +2,7 @@
 ---@alias LockType "movement" | "inventory"
 ---@alias RequestBody HeartbeatRequest | RestartRequest | EvalRequest | ScanRequest
 ---@alias ResponseBody HeartbeatResponse | EvalResponse | BlockDetectionResponse | RotationResponse | PositionResponse | InventoryResponse | ScanResponse
----@field type "request:restart"
+
 ---@class ScanRequest
 ---@field type "request:scan"
 ---@field range number

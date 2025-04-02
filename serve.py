@@ -6,7 +6,7 @@ import os
 import atexit
 from pathlib import Path
 
-ALLOWED_FOLDERS = ["ccm-computer"]
+ALLOWED_FOLDERS = ["computer",]
 PORT = 6543
 
 def all_files_in_folder(folder: str):

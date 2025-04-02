@@ -6,7 +6,7 @@ local url = "http://" .. SERVER .. "/" .. FOLDER
 print(url)
 
 local function download()
-    r = http.get(url)
+    local r = http.get(url)
     if r == nil then
         return false
     end
