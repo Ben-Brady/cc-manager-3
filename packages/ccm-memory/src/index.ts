@@ -17,6 +17,7 @@ export type MemoryBank = {
 export const createMemoryBank = (): MemoryBank => {
     let blockUpdateCallbacks: BlockUpdatesCallback[] = [];
     const onBlockUpdates: MemoryBank["onBlockUpdates"] = ({ callback, signal }) => {
+        blockUpdateCallbacks.push(callback);
         if (signal) {
             signal.onabort = () => {
                 blockUpdateCallbacks = blockUpdateCallbacks.filter((v) => v !== callback);
@@ -29,6 +30,7 @@ export const createMemoryBank = (): MemoryBank => {
 
     let deviceUpdateCallbacks: DeviceUpdateCallback[] = [];
     const onDeviceUpdate: MemoryBank["onDeviceUpdate"] = ({ callback, signal }) => {
+        deviceUpdateCallbacks.push(callback);
         if (signal) {
             signal.onabort = () => {
                 deviceUpdateCallbacks = deviceUpdateCallbacks.filter((v) => v !== callback);
@@ -36,7 +38,6 @@ export const createMemoryBank = (): MemoryBank => {
         }
     };
     const broadcastDeviceUpdate = async (device: Computer) => {
-        console.log(deviceUpdateCallbacks);
         Promise.allSettled([...deviceUpdateCallbacks.map(async (callback) => callback(device))]);
     };
 
