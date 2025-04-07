@@ -42,25 +42,22 @@ export const requestEval = async (
     locks: LockType[] = [],
 ): Promise<EvalResponse> => {
     conn.sendPacket(deviceId, { type: "request:eval", code, locks });
-    return await waitForPacket(conn, deviceId, "response:heartbeat");
+    return await waitForPacket(conn, deviceId, "response:eval");
 };
 
-const waitForPacket = async <T extends ResponsePacketType>(
+const waitForPacket = <T extends ResponsePacketType>(
     conn: WsConnection,
     deviceId: number,
     type: T,
 ): Promise<ResponsePacketFromType<T>> => {
-    const controller = new AbortController();
-
-    const packet = await new Promise((resolve) => {
-        const callback = (packet: ResponsePacket) => {
+    return new Promise<ResponsePacketFromType<T>>((resolve) => {
+        const controller = new AbortController();
+        conn.onPacket((packet) => {
             if (packet.sender !== deviceId) return;
             if (packet.body.type !== type) return;
-            resolve(packet);
-        };
-        conn.onPacket(callback, controller.signal);
-    });
 
-    controller.abort();
-    return packet as ResponsePacketFromType<T>;
+            resolve(packet as ResponsePacketFromType<T>);
+            controller.abort();
+        }, controller.signal);
+    });
 };
