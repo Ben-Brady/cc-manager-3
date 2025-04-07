@@ -39,7 +39,7 @@
 
 ---@class RotationResponse
 ---@field type "update:rotation"
----@field facing "east" | "west" | "north" | "south"
+---@field facing "+x" | "-x" | "-z" | "+z"
 
 ---@class PositionResponse
 ---@field type "update:position"

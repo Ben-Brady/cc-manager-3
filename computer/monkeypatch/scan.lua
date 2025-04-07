@@ -31,28 +31,28 @@ local function getPositionFromDirection(detectDirection)
         }
     end
 
-    if facing == "east" then
+    if facing == "+x" then
         return {
             x = pos.x + 1,
             y = pos.y,
             z = pos.z
         }
     end
-    if facing == "west" then
+    if facing == "-x" then
         return {
             x = pos.x - 1,
             y = pos.y,
             z = pos.z
         }
     end
-    if facing == "north" then
+    if facing == "-z" then
         return {
             x = pos.x,
             y = pos.y,
             z = pos.z - 1
         }
     end
-    if facing == "south" then
+    if facing == "+z" then
         return {
             x = pos.x,
             y = pos.y,

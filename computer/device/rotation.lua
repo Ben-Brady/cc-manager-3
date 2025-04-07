@@ -2,7 +2,7 @@ local network = require "network"
 
 local exports = {}
 
----@alias Rotation "east" | "west" | "north" | "south"
+---@alias Rotation "+x" | "-x" | "-z" | "+z"
 
 ---@type Rotation | nil
 local rotation = nil
@@ -20,15 +20,15 @@ end
 local function calcRotation(oldX, newX, oldZ, newZ)
     if oldZ == newZ then
         if newX > oldX then
-            return "east"
+            return "+x"
         else
-            return "west"
+            return "-x"
         end
     else
         if newZ > oldZ then
-            return "south"
+            return "+z"
         else
-            return "north"
+            return "-z"
         end
     end
 end
@@ -50,28 +50,28 @@ end
 function exports.recordTurnLeft()
     if rotation == nil then return end
 
-    if rotation == "north" then
-        rotation = "west"
-    elseif rotation == "west" then
-        rotation = "south"
-    elseif rotation == "south" then
-        rotation = "east"
-    elseif rotation == "east" then
-        rotation = "north"
+    if rotation == "-z" then
+        rotation = "-x"
+    elseif rotation == "-x" then
+        rotation = "+z"
+    elseif rotation == "+z" then
+        rotation = "+x"
+    elseif rotation == "+x" then
+        rotation = "-z"
     end
 end
 
 function exports.recordTurnRight()
     if rotation == nil then return end
 
-    if rotation == "north" then
-        rotation = "east"
-    elseif rotation == "east" then
-        rotation = "south"
-    elseif rotation == "south" then
-        rotation = "west"
-    elseif rotation == "west" then
-        rotation = "north"
+    if rotation == "-z" then
+        rotation = "+x"
+    elseif rotation == "+x" then
+        rotation = "+z"
+    elseif rotation == "+z" then
+        rotation = "-x"
+    elseif rotation == "-x" then
+        rotation = "-z"
     end
 end
 

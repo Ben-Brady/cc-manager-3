@@ -30,28 +30,28 @@ function exports.withPositionUpdate(func, movement)
                     z = 0
                 }
             elseif movement == "forward" then
-                if facing == "east" then
+                if facing == "+x" then
                     return {
                         x = 1,
                         y = 0,
                         z = 0
                     }
                 end
-                if facing == "west" then
+                if facing == "-x" then
                     return {
                         x = -1,
                         y = 0,
                         z = 0
                     }
                 end
-                if facing == "north" then
+                if facing == "-z" then
                     return {
                         x = 0,
                         y = 0,
                         z = -1
                     }
                 end
-                if facing == "south" then
+                if facing == "+z" then
                     return {
                         x = 0,
                         y = 0,
@@ -59,28 +59,28 @@ function exports.withPositionUpdate(func, movement)
                     }
                 end
             elseif movement == "back" then
-                if facing == "east" then
+                if facing == "+x" then
                     return {
                         x = -1,
                         y = 0,
                         z = 0
                     }
                 end
-                if facing == "west" then
+                if facing == "-x" then
                     return {
                         x = 1,
                         y = 0,
                         z = 0
                     }
                 end
-                if facing == "north" then
+                if facing == "-z" then
                     return {
                         x = 0,
                         y = 0,
                         z = 1
                     }
                 end
-                if facing == "south" then
+                if facing == "+z" then
                     return {
                         x = 0,
                         y = 0,

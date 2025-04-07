@@ -2,7 +2,7 @@ import { AssetsParser, getLoadedBlockstatesStore, getLoadedModelsStore } from "m
 import blockstatesModels from "mc-assets/dist/blockStatesModels.json";
 
 import { THREE } from "../three";
-import {  MISSING_TEXTURE } from "../three/loader";
+import { MISSING_TEXTURE } from "../three/loader";
 import { removeNamespace } from "./utils";
 
 const blockstatesStore = getLoadedBlockstatesStore(blockstatesModels as any);
@@ -64,7 +64,7 @@ export const getModel = (
     return model;
 };
 
-type Size = "up" | "down" | "north" | "south" | "east" | "west";
+type Size = "up" | "down" | "-z" | "+z" | "+x" | "-x";
 
 const QUATER_TURN = Math.PI / 2;
 const faceThings: Record<Size, { offset: THREE.Vector3; rotation: THREE.Euler }> = {

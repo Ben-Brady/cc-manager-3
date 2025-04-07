@@ -109,26 +109,26 @@ const useTurtleRotation = (
 const QUARTER_TURN = -(Math.PI / 2);
 const calcRotation = (facing: undefined | Rotation, prevFacing: undefined | Rotation): number => {
     if (facing && !prevFacing) {
-        if (facing === "north") return QUARTER_TURN * -1;
-        if (facing === "east") return QUARTER_TURN * 0;
-        if (facing === "south") return QUARTER_TURN * 1;
-        if (facing === "west") return QUARTER_TURN * 2;
+        if (facing === "-z") return QUARTER_TURN * -1;
+        if (facing === "+x") return QUARTER_TURN * 0;
+        if (facing === "+z") return QUARTER_TURN * 1;
+        if (facing === "-x") return QUARTER_TURN * 2;
     } else if (facing && prevFacing) {
         // 180 Turn
-        if (facing === "north" && prevFacing === "south") return QUARTER_TURN * 2;
-        if (facing === "south" && prevFacing === "north") return QUARTER_TURN * 2;
-        if (facing === "east" && prevFacing === "west") return QUARTER_TURN * 2;
-        if (facing === "west" && prevFacing === "east") return QUARTER_TURN * 2;
+        if (facing === "-z" && prevFacing === "+z") return QUARTER_TURN * 2;
+        if (facing === "+z" && prevFacing === "-z") return QUARTER_TURN * 2;
+        if (facing === "+x" && prevFacing === "-x") return QUARTER_TURN * 2;
+        if (facing === "-x" && prevFacing === "+x") return QUARTER_TURN * 2;
 
         // 90 Turn
-        if (facing === "north" && prevFacing === "east") return -QUARTER_TURN;
-        if (facing === "north" && prevFacing === "west") return QUARTER_TURN;
-        if (facing === "south" && prevFacing === "east") return QUARTER_TURN;
-        if (facing === "south" && prevFacing === "west") return -QUARTER_TURN;
-        if (facing === "east" && prevFacing === "north") return QUARTER_TURN;
-        if (facing === "east" && prevFacing === "south") return -QUARTER_TURN;
-        if (facing === "west" && prevFacing === "north") return -QUARTER_TURN;
-        if (facing === "west" && prevFacing === "south") return QUARTER_TURN;
+        if (facing === "-z" && prevFacing === "+x") return -QUARTER_TURN;
+        if (facing === "-z" && prevFacing === "-x") return QUARTER_TURN;
+        if (facing === "+z" && prevFacing === "+x") return QUARTER_TURN;
+        if (facing === "+z" && prevFacing === "-x") return -QUARTER_TURN;
+        if (facing === "+x" && prevFacing === "-z") return QUARTER_TURN;
+        if (facing === "+x" && prevFacing === "+z") return -QUARTER_TURN;
+        if (facing === "-x" && prevFacing === "-z") return -QUARTER_TURN;
+        if (facing === "-x" && prevFacing === "+z") return QUARTER_TURN;
 
         // 0 degree turn
         if (facing === prevFacing) return 0;

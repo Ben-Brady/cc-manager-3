@@ -15,7 +15,7 @@ export type Item = z.infer<typeof Item>;
 export const ItemSlot = Item.nullable();
 export type ItemSlot = z.infer<typeof ItemSlot>;
 
-export const Rotation = z.enum(["east", "west", "north", "south"]);
+export const Rotation = z.enum(["+x", "-x", "-z", "+z"]);
 export type Rotation = z.infer<typeof Rotation>;
 
 export type Vec3 = z.infer<typeof Vec3>;
