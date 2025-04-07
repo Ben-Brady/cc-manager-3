@@ -26,9 +26,6 @@ if deviceType.getDeviceType() == "pocket" then
     loop.startThread(function()
         utils.interval(0.2, position)
     end)
-    loop.startThread(function()
-        utils.interval(0.2, position)
-    end)
 end
 
 loop.run()
