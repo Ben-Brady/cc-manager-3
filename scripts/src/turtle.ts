@@ -68,14 +68,10 @@ export const wrapTurtle = (conn: WsConnection, memory: MemoryBank, deviceId: num
     };
 
     const runCode = async (locks: LockType[], heartbeat: boolean, code: string) => {
-        const utc = Date.now() / 1000;
-        console.log(`${utc} | ${deviceId}-> | request:eval`);
-        console.time("requestEval");
+        console.log(`${deviceId}-> | request:eval`);
         await requestEval(conn, deviceId, code, locks);
-        console.timeEnd("requestEval");
         if (heartbeat) {
-            const utc = Date.now() / 1000;
-            console.log(`${utc} | ${deviceId}-> | request:heartbeat`);
+            console.log(`${deviceId}-> | request:heartbeat`);
             await requestHeartbeat(conn, deviceId);
         }
     };
