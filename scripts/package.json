@@ -1,0 +1,17 @@
+{
+  "name": "scripts",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "ccm-connection": "../packages/ccm-connection",
+    "ccm-memory": "../packages/ccm-memory",
+    "ccm-packet": "../packages/ccm-packet"
+  }
+}

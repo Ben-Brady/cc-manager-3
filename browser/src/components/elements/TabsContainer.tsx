@@ -25,7 +25,7 @@ function TabContainer<T extends string>({
                         key={name}
                         onClick={() => onChangeTab?.(name)}
                         className={classNames(
-                            "cursor-pointer  border-2 border-black rounded-[4px] translate-y-1",
+                            "cursor-pointer border-2 border-black rounded-[4px] translate-y-[5px]",
                             currentTab !== name && "",
                             currentTab === name && "z-20 border-b-0",
                         )}

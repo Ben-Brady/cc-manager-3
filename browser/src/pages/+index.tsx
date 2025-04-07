@@ -4,12 +4,13 @@ import Button from "@/components/elements/Button";
 import Container from "@/components/elements/Container";
 import ComputerSection from "@/components/extensive/ComputerInfo";
 import { useConnectionContext } from "@/context/ConnectionProvider";
+import { requestHeartbeat } from "ccm-connection";
 
 const ListingPage: FC = () => {
     const { conn, computers, blocks } = useConnectionContext();
 
     const onPingAll = () => {
-        conn.broadcastPacket({ type: "request:heartbeat" });
+        conn.sendPacket("*", { type: "request:heartbeat" });
     };
 
     return (

@@ -5,7 +5,6 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import Layout from "@/components/layouts/Layout";
 import { ConnectionProvider } from "@/context/ConnectionProvider";
 import HomePage from "@/pages/+index";
-import TestPage from "@/pages/+test";
 import TurtlePage from "@/pages/+turtle";
 
 export default function App() {
@@ -18,7 +17,6 @@ export default function App() {
                         <Route path="/turtle/:id" element={<TurtlePage />} />
                     </Route>
                 </Route>
-                <Route path="/test" element={<TestPage />} />
             </Routes>
         </BrowserRouter>
     );

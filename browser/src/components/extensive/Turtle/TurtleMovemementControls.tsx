@@ -6,7 +6,7 @@ import ArrowUpImage from "@/assets/images/arrow-up.png";
 import DotImage from "@/assets/images/dot.png";
 import Button from "@/components/elements/Button";
 import Container from "@/components/elements/Container";
-import { TurtleActions } from "@/lib/devices/turtle";
+import { TurtleActions } from "@/lib/turtle";
 
 const TurtleMovemementControls: FC<{
     actions: TurtleActions;

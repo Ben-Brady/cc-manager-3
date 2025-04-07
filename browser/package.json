@@ -11,7 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ccm-packet": "../ccm-packet",
+    "ccm-packet": "../packages/ccm-packet",
+    "ccm-memory": "../packages/ccm-memory",
+    "ccm-connection": "../packages/ccm-connection",
     "@monaco-editor/react": "^4.7.0",
     "@react-three/drei": "^10.0.1",
     "@react-three/fiber": "^9.0.4",

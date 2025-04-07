@@ -1,4 +1,4 @@
-import { Block } from "@/hook/useBlocks";
+import { Block } from "@/hook/blocks/useBlocks";
 import { isBlockOccluding } from "@/lib/minecraft/occluding";
 import { Vec3 } from "ccm-packet";
 import { toStringVec3 } from "@/lib/three/utils";

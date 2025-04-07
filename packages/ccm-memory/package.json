@@ -1,0 +1,21 @@
+{
+  "name": "ccm-memory",
+  "module": "./dist/index.js",
+  "type": "module",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "esbuild": "0.25.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "ccm-packet": "../ccm-packet",
+    "zod": "^3.24.2"
+  }
+}

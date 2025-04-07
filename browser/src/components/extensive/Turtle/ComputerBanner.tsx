@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { useSecondsSince } from "@/hook/useSecondsSince";
 import { ComputerInfo } from "@/lib/devices/types";
-import { formatDuration } from "@/lib/format";
+import { formatDuration, formatNumberShort } from "@/lib/format";
 
 const ComputerBanner: FC<{ computer: ComputerInfo }> = ({ computer }) => {
     const { label, id, type, position } = computer;
@@ -16,7 +16,8 @@ const ComputerBanner: FC<{ computer: ComputerInfo }> = ({ computer }) => {
                 <div className="font-minecraft capitalize flex flex-col">
                     <span>{label ? `${label}(${id})` : `ID ${id}`}</span>
                     <span>
-                        {type} {computer.type == "turtle" && ` | ${computer.fuel} Fuel`}
+                        {type}{" "}
+                        {computer.type == "turtle" && ` | ${formatNumberShort(computer.fuel ?? 0)} Fuel`}
                     </span>
                 </div>
                 <div className="font-minecraft text-center flex flex-col">

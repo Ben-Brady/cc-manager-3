@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import Container from "@/components/elements/Container";
-import { TurtleActions } from "@/lib/devices/turtle";
+import { TurtleActions } from "@/lib/turtle";
 import { TurtleInfo } from "@/lib/devices/types";
 
 import InventoryGrid from "../Inventory/InventoryGrid";

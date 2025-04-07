@@ -1,6 +1,5 @@
+import { connectToProxy, WsConnection } from "ccm-connection";
 import { useEffect, useState } from "react";
-
-import { connectToProxy, WsConnection } from "@/lib/ws/connection";
 
 export const useConnection = (): WsConnection | undefined => {
     const [conn, setConn] = useState<WsConnection | undefined>(undefined);
@@ -10,8 +9,8 @@ export const useConnection = (): WsConnection | undefined => {
         const signal = controller.signal;
 
         (async () => {
-            const conn = await connectToProxy("ws://localhost:8000/ws/client");
-            signal.onabort = () => conn.close();
+            const conn = await connectToProxy("ws://localhost:8000");
+            signal.onabort = () => conn.disconnect();
             setConn(conn);
         })();
 

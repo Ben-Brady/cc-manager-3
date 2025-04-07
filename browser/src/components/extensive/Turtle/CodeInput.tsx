@@ -1,7 +1,7 @@
 import { FC, useRef, useState } from "react";
 
 import Button from "@/components/elements/Button";
-import { TurtleActions } from "@/lib/devices/turtle";
+import { TurtleActions } from "@/lib/turtle";
 
 const CodeInput: FC<{ actions: TurtleActions }> = ({ actions }) => {
     const inputRef = useRef<HTMLTextAreaElement>(null);

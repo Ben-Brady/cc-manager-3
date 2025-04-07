@@ -3,7 +3,7 @@ import { FC } from "react";
 import DotImage from "@/assets/images/dot.png";
 import ArrowImage from "@/assets/images/arrow.png";
 import Button from "@/components/elements/Button";
-import type { TurtleActions } from "@/lib/devices/turtle";
+import type { TurtleActions } from "@/lib/turtle";
 
 import DirectionalActions from "./DirectionalActions";
 

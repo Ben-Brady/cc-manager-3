@@ -1,10 +1,10 @@
 import { ComponentProps, FC, memo, useMemo } from "react";
 
-import { Block } from "@/hook/useBlocks";
+import { Block } from "@/hook/blocks/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 import { THREE } from "@/lib/three";
 
-import { Tooltip } from "../WorldViewer";
+import { Tooltip } from "../WorldCanvas";
 import FlowerMesh, { isFlower } from "./FlowerMesh";
 import FullBlockMesh from "./FullBlockMesh";
 import LiquidMesh, { isLiquid } from "./LiquidMesh";
@@ -22,29 +22,14 @@ type BlockMeshProps = {
     texture: THREE.Texture | undefined;
     blockName: string;
     positions: Vec3[];
-    setTooltip: (tooltip: Tooltip | undefined) => void;
 };
 
-const BlockMeshes: FC<BlockMeshProps> = memo(function BlockMesh({
-    texture,
-    blockName,
-    positions,
-    setTooltip,
-}) {
+const BlockMeshes: FC<BlockMeshProps> = memo(function BlockMesh({ texture, blockName, positions }) {
     const meshprops: MeshProps = {
         blockName,
         texture,
         positions,
-        meshProps: {
-            onPointerEnter: (e: any) => {
-                setTooltip({ text: blockName, x: e.layerX, y: e.layerY });
-                e.stopPropagation();
-            },
-            onPointerOut: (e) => {
-                setTooltip(undefined);
-                e.stopPropagation();
-            },
-        },
+        meshProps: {},
     };
 
     if (isLiquid(blockName)) return <LiquidMesh {...meshprops} />;

@@ -1,5 +1,5 @@
 local exports = {}
 
-exports.autoscan = true
+exports.autoscan = false
 
 return exports

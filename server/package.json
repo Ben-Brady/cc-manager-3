@@ -16,7 +16,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "ccm-packet": "../ccm-packet",
+    "ccm-packet": "../packages/ccm-packet",
+    "ccm-memory": "../packages/ccm-memory",
     "@types/jsdom": "^21.1.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",

@@ -1,10 +1,10 @@
+import { WsConnection } from "ccm-connection";
+import { Block } from "ccm-packet";
 import { createContext, FC, ReactNode, useContext } from "react";
 
-import { Block, useBlocks } from "@/hook/useBlocks";
-import { useComputers } from "@/hook/useComputers";
 import { useConnection } from "@/hook/useConnection";
+import { useMemory } from "@/hook/useMemory";
 import { ComputerInfo } from "@/lib/devices/types";
-import { WsConnection } from "@/lib/ws/connection";
 
 type ConnectionContextType = {
     conn: WsConnection;
@@ -22,10 +22,12 @@ export const useConnectionContext = (): ConnectionContextType => {
 
 export const ConnectionProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const conn = useConnection();
-    const blocks = useBlocks(conn);
-    const computers = useComputers(conn);
-    if (!conn) return "Loading...";
+    const { blocks, devices } = useMemory(conn);
+    if (!conn) {
+        return <div className="size-full flex items-center justify-center">Loading...</div>;
+    }
 
+    const computers = Object.values(devices);
     return (
         <ConnectionContext.Provider value={{ conn, blocks, computers }}>
             {children}

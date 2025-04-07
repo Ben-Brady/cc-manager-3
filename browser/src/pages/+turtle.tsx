@@ -1,10 +1,11 @@
-import { FC, useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { FC } from "react";
+import { useParams } from "react-router";
 
-import CanvasControls from "@/components/extensive/Canvas/TurtleControls";
-import WorldViewer from "@/components/extensive/Canvas/WorldViewer";
+import TurtleFullControls from "@/components/extensive/Controls/TurtleFullControls";
+import WorldCanvas from "@/components/extensive/Canvas/WorldCanvas";
 import { useConnectionContext } from "@/context/ConnectionProvider";
 import { TurtleInfo } from "@/lib/devices/types";
+import Container from "@/components/elements/Container";
 
 const CanvasPage: FC = () => {
     const { conn, blocks, computers } = useConnectionContext();
@@ -17,10 +18,12 @@ const CanvasPage: FC = () => {
     if (!turtle) return null;
 
     return (
-        <div className="flex flex-col gap-4 max-w-192 items-center w-full">
-            <WorldViewer computerId={id} computers={computers} blocks={blocks} />
-            <CanvasControls conn={conn} turtle={turtle} />
-        </div>
+        <Container className="flex gap-4 max-w-192 w-full">
+            <div className="flex flex-col gap-4 items-center w-full">
+                <WorldCanvas computerId={id} computers={computers} blocks={blocks} />
+                <TurtleFullControls conn={conn} turtle={turtle} />
+            </div>
+        </Container>
     );
 };
 

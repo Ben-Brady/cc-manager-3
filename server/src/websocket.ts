@@ -35,6 +35,7 @@ export const attachWebsocketEndpoints = (app: Express) => {
                 try {
                     callback(msg);
                 } catch (e) {
+                    console.error("Failed to parse message");
                     console.error(e);
                 }
             }

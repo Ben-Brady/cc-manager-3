@@ -15,3 +15,7 @@ export const formatDuration = (seconds: number) => {
 
     return `${seconds} seconds`;
 };
+
+export const formatNumberShort = (value: number): string => {
+    return new Intl.NumberFormat("en-US", { notation: "compact" }).format(value);
+};

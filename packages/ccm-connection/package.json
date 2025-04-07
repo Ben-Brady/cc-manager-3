@@ -1,0 +1,24 @@
+{
+  "name": "ccm-connection",
+  "module": "./dist/index.js",
+  "type": "module",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "esbuild": "0.25.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@libsql/isomorphic-ws": "^0.1.5",
+    "@types/node": "^22.14.0",
+    "ccm-packet": "../ccm-packet",
+    "isomorphic-ws": "^5.0.0",
+    "zod": "^3.24.2"
+  }
+}

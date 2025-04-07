@@ -1,9 +1,9 @@
 import { FC } from "react";
 
-import { Block } from "@/hook/useBlocks";
+import { Block } from "@/hook/blocks/useBlocks";
 import { LOADING, useBlockTexture } from "@/hook/useBlockTexture";
 
-import { Tooltip } from "../WorldViewer";
+import { Tooltip } from "../WorldCanvas";
 import BlockMeshes from "./BlockMeshes";
 
 export type BlockGroup = {
@@ -13,8 +13,7 @@ export type BlockGroup = {
 
 const BlockGroupMeshes: FC<{
     group: BlockGroup;
-    setTooltip: (tooltip: Tooltip | undefined) => void;
-}> = ({ group, setTooltip }) => {
+}> = ({ group }) => {
     const { name, blocks } = group;
     const texture = useBlockTexture(name);
 
@@ -29,7 +28,6 @@ const BlockGroupMeshes: FC<{
             blockName={block.name}
             texture={texture}
             positions={blocks.map((v) => v.position)}
-            setTooltip={setTooltip}
         />
     );
 };
