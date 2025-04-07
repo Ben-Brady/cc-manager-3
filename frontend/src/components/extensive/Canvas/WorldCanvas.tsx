@@ -27,7 +27,7 @@ const WorldCanvas: FC<{
     const blockGroups = useMemo(() => groupBlocks(blockList), [blockList]);
 
     return (
-        <div className="size-full">
+        <div className="w-full h-128">
             <Canvas>
                 <AdaptiveDpr pixelated />
                 <FPSCounter />
