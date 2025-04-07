@@ -1,9 +1,13 @@
 # Computer Craft Manager
 
-Packages:
+A framework for managing Turtles in Computer Craft, supporting a frontend and standalone scripts.
+
+https://github.com/user-attachments/assets/7dec592c-49a6-4e62-9550-cd97e3616525
+
+## Folders
 
 -   computer
-    -   The CC Computer code
+    -   The Computer Craft Computer code
 -   computer-serve
     -   A server and startscript pair that sends
 -   server
