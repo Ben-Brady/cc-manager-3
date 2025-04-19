@@ -1,7 +1,10 @@
 local utils = require "utils"
 local loop = require "loop"
+local output = require "display.output"
+
 local exports = {}
 
+---@type Websocket
 local ws
 
 local function reconnect()
@@ -9,10 +12,11 @@ local function reconnect()
         local WS_SERVER = "ws://127.0.0.1:8000/ws/computer"
         ws, error = http.websocket(WS_SERVER)
         if ws ~= false then
+            output.log("Succesfully Connected")
             return
         end
 
-        utils.log("Reconnecting...")
+        output.log("Reconnecting...")
         sleep(3)
     end
 end
@@ -24,8 +28,9 @@ end
 ---@return RequestBody | nil
 function exports.getNextPacket()
     local success, msg = pcall(function()
-        return ws.receive()
+        return ws.receive(0.2)
     end)
+
     if not success then
         reconnect()
         return
@@ -45,32 +50,31 @@ function exports.getNextPacket()
         return nil
     end
 
-    utils.log("<- " .. packet.body.type)
+    output.logRequestPacket(packet)
 
     return packet.body
 end
 
 ---@param body ResponseBody
 function exports.broadcastPacket(body)
-    loop.startThread(function()
-        ---@type ResponsePacket
-        local packet = {
-            sender = os.getComputerID(),
-            body = body
-        }
+    ---@type ResponsePacket
+    local packet = {
+        sender = os.getComputerID(),
+        body = body
+    }
 
-        local json = textutils.serializeJSON(packet, {
-            allow_repetitions = true
-        })
-        local success = pcall(function()
-            ws.send(json, false)
-        end)
-        if success then
-            utils.log("-> " .. body.type)
-        else
-            reconnect()
-        end
+    local json = textutils.serializeJSON(packet, {
+        allow_repetitions = true
+    })
+    local success = pcall(function()
+        ws.send(json, false)
     end)
+    if success then
+        output.logResponsePacket(packet)
+    else
+        reconnect()
+        exports.broadcastPacket(body)
+    end
 end
 
 return exports

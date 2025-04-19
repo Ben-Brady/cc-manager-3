@@ -2,6 +2,7 @@ local tasks = require "tasks"
 local locks = require "locks"
 local loop  = require "loop"
 local utils = require "utils"
+local output = require "display.output"
 
 local function runNextTask()
     for index, task in pairs(tasks.taskQueue) do
@@ -21,7 +22,10 @@ local function runNextTask()
             locks.aquireLocks(taskLocks)
             loop.startThread(function()
                 local success, msg = pcall(function() taskDesc.execute(task) end)
-                if not success then print(msg) end
+
+                if not success then
+                    output.log("Error: " .. msg)
+                end
                 locks.releaseLocks(taskLocks)
             end)
         end

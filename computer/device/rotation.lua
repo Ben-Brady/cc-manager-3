@@ -1,16 +1,8 @@
 local network = require "network"
+local globals = require "device.globals"
 
 local exports = {}
 
----@alias Rotation "+x" | "-x" | "-z" | "+z"
-
----@type Rotation | nil
-local rotation = nil
-
----@return Rotation | nil
-function exports.getRotation()
-    return rotation
-end
 
 ---@param oldX number
 ---@param newX number
@@ -38,40 +30,40 @@ end
 ---@param oldZ number
 ---@param newZ number
 function exports.reportMovement(oldX, newX, oldZ, newZ)
-    if rotation ~= nil then return end
+    if globals.facing ~= nil then return end
 
-    rotation = calcRotation(oldX, newX, oldZ, newZ)
+    globals.facing = calcRotation(oldX, newX, oldZ, newZ)
     network.broadcastPacket({
         type = "update:rotation",
-        facing = rotation,
+        facing = globals.facing,
     })
 end
 
 function exports.recordTurnLeft()
-    if rotation == nil then return end
+    if globals.facing == nil then return end
 
-    if rotation == "-z" then
-        rotation = "-x"
-    elseif rotation == "-x" then
-        rotation = "+z"
-    elseif rotation == "+z" then
-        rotation = "+x"
-    elseif rotation == "+x" then
-        rotation = "-z"
+    if globals.facing == "-z" then
+        globals.facing = "-x"
+    elseif globals.facing == "-x" then
+        globals.facing = "+z"
+    elseif globals.facing == "+z" then
+        globals.facing = "+x"
+    elseif globals.facing == "+x" then
+        globals.facing = "-z"
     end
 end
 
 function exports.recordTurnRight()
-    if rotation == nil then return end
+    if globals.facing == nil then return end
 
-    if rotation == "-z" then
-        rotation = "+x"
-    elseif rotation == "+x" then
-        rotation = "+z"
-    elseif rotation == "+z" then
-        rotation = "-x"
-    elseif rotation == "-x" then
-        rotation = "-z"
+    if globals.facing == "-z" then
+        globals.facing = "+x"
+    elseif globals.facing == "+x" then
+        globals.facing = "+z"
+    elseif globals.facing == "+z" then
+        globals.facing = "-x"
+    elseif globals.facing == "-x" then
+        globals.facing = "-z"
     end
 end
 

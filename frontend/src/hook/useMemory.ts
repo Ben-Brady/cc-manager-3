@@ -13,7 +13,7 @@ export const useMemory = (conn: WsConnection | undefined) => {
         if (!conn) return;
 
         const controller = new AbortController();
-        const { signal, abort } = controller;
+        const { signal } = controller;
         const memory = createMemoryBank();
 
         (async () => {
@@ -27,26 +27,24 @@ export const useMemory = (conn: WsConnection | undefined) => {
 
         memory.onBlockUpdates({
             callback: () => {
-                console.log("Block Update");
+                console.log(memory.blocks);
                 setBlocks(memory.blocks);
             },
             signal: signal,
         });
         memory.onDeviceUpdate({
             callback: () => {
-                console.log("Device Update");
                 setDevices(memory.devices);
             },
             signal: signal,
         });
 
         conn.onPacket((packet) => {
-            console.log(packet);
             memory.feedPacket(packet);
         }, signal);
 
-        return () => abort();
-    }, []);
+        return () => controller.abort();
+    }, [conn]);
 
     return { blocks, devices };
 };

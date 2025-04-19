@@ -1,5 +1,6 @@
 local network = require "network"
 local rotation = require "device.rotation"
+local globals = require "device.globals"
 
 local exports = {}
 ---@param action function
@@ -15,7 +16,7 @@ function exports.turnWithRotationUpdate(action, direction)
                 rotation.recordTurnLeft()
             end
 
-            local facing = rotation.getRotation()
+            local facing = globals.facing
             if facing then
                 network.broadcastPacket({
                     type = "update:rotation",
@@ -31,7 +32,7 @@ end
 ---@param action function
 function exports.fowardWithRotationCalibration(action)
     return function()
-        local hasRotation = rotation.getRotation() ~= nil
+        local hasRotation = globals.facing ~= nil
         if hasRotation then
             return action()
         end
@@ -51,7 +52,7 @@ end
 ---@param action function
 function exports.backWithRotationCalibration(action)
     return function()
-        local hasRotation = rotation.getRotation() ~= nil
+        local hasRotation = globals.facing ~= nil
         if hasRotation then
             return action()
         end

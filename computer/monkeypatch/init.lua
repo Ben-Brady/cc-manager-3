@@ -2,10 +2,14 @@ local direction = require "monkeypatch.direction"
 local scan = require "monkeypatch.scan"
 local position = require "monkeypatch.position"
 local inventory = require "monkeypatch.inventory"
+local equip = require "monkeypatch.equip"
 
 return {
     patch = function()
         if turtle then
+            turtle.equipLeft = equip.withEquipUpdate(turtle.equipLeft, "left")
+            turtle.equipRight = equip.withEquipUpdate(turtle.equipRight, "right")
+
             turtle.inspect = scan.withInspectReport(turtle.inspect, "front")
             turtle.inspectUp = scan.withInspectReport(turtle.inspectUp, "up")
             turtle.inspectDown = scan.withInspectReport(turtle.inspectDown, "down")
@@ -40,7 +44,7 @@ return {
             turtle.up = scan.withMovementScan(turtle.up)
             turtle.down = scan.withMovementScan(turtle.down)
 
-            turtle.select = inventory.withSelectedSlotReport(turtle.select)
+            -- turtle.select = inventory.withSelectedSlotReport(turtle.select)
         end
     end
 }

@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { Rotation } from "ccm-packet";
+import { Direction } from "ccm-packet";
 import { clamp } from "lodash";
 import { FC, RefObject, useRef } from "react";
 import { useNavigate } from "react-router";
@@ -89,7 +89,7 @@ const useTurtleRotation = (
     turtleRef: RefObject<TurtleInfo>,
     speed: number,
 ) => {
-    const previousFacingRef = useRef<Rotation | undefined>(undefined);
+    const previousFacingRef = useRef<Direction | undefined>(undefined);
     const targetRotationRef = useRef(0);
 
     useFrame((_, delta) => {
@@ -107,7 +107,7 @@ const useTurtleRotation = (
 };
 
 const QUARTER_TURN = -(Math.PI / 2);
-const calcRotation = (facing: undefined | Rotation, prevFacing: undefined | Rotation): number => {
+const calcRotation = (facing: undefined | Direction, prevFacing: undefined | Direction): number => {
     if (facing && !prevFacing) {
         if (facing === "-z") return QUARTER_TURN * -1;
         if (facing === "+x") return QUARTER_TURN * 0;

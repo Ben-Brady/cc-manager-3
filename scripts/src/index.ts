@@ -1,54 +1,67 @@
 import { createMemoryBank } from "ccm-memory";
-import { broadcastHeartbeatRequest, connectToProxy, requestHeartbeat } from "ccm-connection";
-import { wrapTurtle, type Turtle } from "./turtle";
+import { HeartbeatResponse } from "ccm-packet";
+import {
+    broadcastHeartbeatRequest,
+    connectToProxy,
+    fetchBlocks,
+    fetchComputers,
+} from "ccm-connection";
+import { wrapTurtle as initialiseTurtle, type Turtle } from "./utils/turtle";
 import { sleep } from "bun";
-import { log } from "./log";
-import { LockType, Vec3 } from "ccm-packet";
-import type { WsConnection } from "ccm-connection";
+import { openSync, writeSync } from "fs";
 
 const conn = await connectToProxy("ws://localhost:8000");
 
 const memory = createMemoryBank();
-conn.onPacket(({ body, sender }) => {
-    log(`<-${sender} | ${body.type}`);
-});
+
+memory.feedDevices(await fetchComputers("http://localhost:8000"));
+memory.feedBlocks(await fetchBlocks("http://localhost:8000"));
+conn.onPacket((packet) => memory.feedPacket(packet));
+
 conn.onPacket((packet) => {
-    memory.feedPacket(packet);
+    const sender = packet.sender.toString().padStart(2);
+
+    if (packet.body.type !== "response:heartbeat") {
+        const f = openSync("./network.txt", "a");
+        const timestamp = new Date().toISOString();
+        writeSync(f, `${timestamp} | ${JSON.stringify(packet)}\n`);
+    }
+
+    if (packet.body.type === "response:eval") {
+        console.log(`  ${sender} <- ${packet.body.type}:${packet.body.id}`);
+    } else {
+        console.log(`  ${sender} <- ${packet.body.type}`);
+    }
+});
+conn.onPacketSent((packet) => {
+    const f = openSync("./network.txt", "a");
+    const timestamp = new Date().toISOString();
+    writeSync(f, `${timestamp} | ${JSON.stringify(packet)}\n`);
+
+    const dest = packet.destination.toString().padStart(2);
+    if (packet.body.type === "request:eval") {
+        console.log(`  ${dest} -> ${packet.body.type}:${packet.body.id}`);
+    } else {
+        console.log(`  ${dest} -> ${packet.body.type}`);
+    }
 });
 
 // Load all devices
 await broadcastHeartbeatRequest(conn);
 await sleep(1000);
 
-const turtle = wrapTurtle(conn, memory, 0);
-if (!turtle.position) throw new Error("Turtle doesn't have position");
-
-const requestEval = async (
-    conn: WsConnection,
-    deviceId: number,
-    settings: {
-        code: string;
-        locks?: LockType[];
-    },
-) => {
-    const { code, locks = [] } = settings;
-
-    conn.sendPacket(deviceId, { type: "request:eval", code, locks });
-    await new Promise((resolve) => {
-        const controller = new AbortController();
-        conn.onPacket((packet) => {
-            if (packet.sender !== deviceId) return;
-            if (packet.body.type !== "response:eval") return;
-            resolve(null);
-            controller.abort();
-        }, controller.signal);
-    });
+const findTurtle = (label: string) => {
+    const device = Object.values(memory.devices).find((v) => v.label === label);
+    if (!device) throw new Error(`Could not turtle: ${label}`);
+    return device;
 };
 
-const mineOre = (turtle: Turtle, position: Vec3) => {};
+// const ben = await initialiseTurtle(conn, memory, findTurtle("Ben"));
+const holly = await initialiseTurtle(conn, memory, findTurtle("Holly"));
+const freya = await initialiseTurtle(conn, memory, findTurtle("Freya"));
+
+await holly.faceTowards("-x");
+await freya.faceTowards("-x");
 while (true) {
-    await turtle.turnLeft();
-    await turtle.turnRight();
-    await turtle.goUp();
-    await turtle.goDown();
+    await Promise.all([holly.turnLeft(), freya.turnLeft()]);
 }

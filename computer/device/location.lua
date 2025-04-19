@@ -1,39 +1,27 @@
 local deviceType = require "device.type"
+local globals = require "device.globals"
 
 local exports = {}
 
----@type Vec3 | nil
-local position = nil
-
-local x, _ = gps.locate(1, false)
-exports.hasGPS = x ~= nil
-
----@param newPos Vec3
-function exports.updatePostion(newPos)
-    position = newPos
-end
+local gpsX, _ = gps.locate(1, false)
 
 ---@return Vec3|nil
 function exports.getPosition()
     if deviceType.getDeviceType() ~= "turtle" then
         exports.updateFromGPS()
-        return position
+        return globals.position
     else
-        if position == nil then
+        if globals.position == nil then
             exports.updateFromGPS()
         end
-        
-        return position
-    end
 
+        return globals.position
+    end
 end
 
 function exports.updateFromGPS()
-    if not exports.hasGPS then
-        return
-    end
     local x, y, z = gps.locate(0.5, false)
-    position = {
+    globals.position = {
         x = x,
         y = y,
         z = z
@@ -42,11 +30,12 @@ end
 
 ---@param offset Vec3
 function exports.applyOffset(offset)
+    local position = globals.position
     if position == nil then
         return
     end
 
-    position = {
+    globals.position = {
         x = position.x + offset.x,
         y = position.y + offset.y,
         z = position.z + offset.z

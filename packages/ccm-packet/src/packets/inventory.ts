@@ -1,9 +1,15 @@
 import { z } from "zod";
 
-import { Item } from "../generic.js";
+import { ItemSlot } from "../generic.js";
 
-export const InventoryResponse = z.object({
+export const InventoryUpdate = z.object({
     type: z.literal("update:inventory"),
-    inventory: z.record(z.number(), Item),
+    inventory: ItemSlot.array(),
 });
-export type InventoryResponse = z.infer<typeof InventoryResponse>;
+export type InventoryUpdate = z.infer<typeof InventoryUpdate>;
+
+export const SelectionResponse = z.object({
+    type: z.literal("update:selection"),
+    slot: z.number(),
+});
+export type SelectionResponse = z.infer<typeof SelectionResponse>;

@@ -7,6 +7,8 @@ import { PositionUpdate } from "./packets/position.js";
 import { RestartRequest } from "./packets/restart.js";
 import { RotationUpdate } from "./packets/rotation.js";
 import { ScanRequest, ScanResponse } from "./packets/scan.js";
+import { EquippedUpdate } from "./packets/equipped.js";
+import { InventoryUpdate, SelectionResponse } from "./packets/inventory.js";
 
 export const RequestPacket = z.object({
     destination: z.union([z.literal("*"), z.number()]),
@@ -31,6 +33,9 @@ export const ResponseBody = z.lazy(() =>
         EvalResponse,
         BlockDetectionResponse,
         RotationUpdate,
+        EquippedUpdate,
+        SelectionResponse,
+        InventoryUpdate,
         PositionUpdate,
         ScanResponse,
     ]),

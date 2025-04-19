@@ -1,4 +1,5 @@
 ---@meta
+
 ---@alias ComputerTaskType "request:heartbeat" | "request:restart" | "request:eval" | "request:scan"
 ---@alias Task HeartbeatRequest | EvalRequest | RestartRequest
 ---@alias NaiveTask HeartbeatRequest
@@ -6,7 +7,7 @@
 ---@meta
 ---@alias LockType "movement" | "inventory"
 ---@alias RequestBody HeartbeatRequest | RestartRequest | EvalRequest | ScanRequest
----@alias ResponseBody HeartbeatResponse | EvalResponse | BlockDetectionResponse | RotationResponse | PositionResponse | InventoryResponse | ScanResponse
+---@alias ResponseBody HeartbeatResponse | EvalResponse | BlockDetectionResponse | RotationResponse | PositionResponse | InventoryResponse | ScanResponse | EquippedResponse
 
 ---@class ScanRequest
 ---@field type "request:scan"
@@ -24,12 +25,14 @@
 
 ---@class EvalRequest
 ---@field type "request:eval"
+---@field id string
 ---@field code string
 ---@field locks LockType[]
 
 ---@class EvalResponse
 ---@field type "response:eval"
----@field value string
+---@field id string
+---@field value string | nil
 ---@field isError boolean
 
 ---@class BlockDetectionResponse
@@ -45,12 +48,22 @@
 ---@field type "update:position"
 ---@field position Vec3
 
+---@class EquippedResponse
+---@field type "update:equipped"
+---@field side "right" | "left"
+---@field item HeldItem
+
 ---@class InventoryResponse
 ---@field type "update:inventory"
 ---@field inventory table<number, ItemSlot>
 
+---@class SelectionResponse
+---@field type "updated:selection"
+---@field slot number
+
 ---@class HeartbeatRequest
 ---@field type "request:heartbeat"
+
 ---@class RestartRequest
 ---@field type "request:restart"
 
@@ -76,9 +89,10 @@
 ---@field type "turtle"
 ---@field inventory table<number, ItemSlot>
 ---@field selectedSlot number
----@field leftHand ItemSlot
----@field rightHand ItemSlot
 ---@field fuel number
+---@field leftHand HeldItem|nil
+---@field rightHand HeldItem|nil
+
 ---@class Vec3
 ---@field x number
 ---@field y number
@@ -87,7 +101,8 @@
 ---@class Item
 ---@field name string
 ---@field count number
----@alias ItemSlot Item | nil
+
+---@alias ItemSlot Item | "empty"
 
 ---@class RequestPacket
 ---@field destination number | "*"
@@ -95,3 +110,19 @@
 ---@class ResponsePacket
 ---@field sender number
 ---@field body ResponseBody
+
+---@alias HeldItem
+--- | "empty"
+--- | "unknown_item"
+--- | "pickaxe"
+--- | "axe"
+--- | "shovel"
+--- | "hoe"
+--- | "sword"
+--- | "crafting_table"
+--- | "speaker"
+--- | "ender_modem"
+--- | "wireless_modem"
+--- | "ap:geoscanner"
+
+---@alias Rotation "+x" | "-x" | "-z" | "+z"

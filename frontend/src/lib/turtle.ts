@@ -1,10 +1,16 @@
-import { requestEval, requestHeartbeat, WsConnection } from "ccm-connection";
+import {
+    EvalOptions,
+    EvalResult,
+    requestEval,
+    requestHeartbeat,
+    WsConnection,
+} from "ccm-connection";
 import { HeartbeatResponse, LockType, RequestBody } from "ccm-packet";
 
 export type TurtleActions = {
     restart: () => void;
     scan: (range: number) => void;
-    eval: (locks: LockType[], code: string) => Promise<{ success: boolean; value: string }>;
+    eval: (options: EvalOptions) => Promise<EvalResult>;
     heartbeat: () => Promise<HeartbeatResponse>;
 
     select: (slot: number) => Promise<void>;
@@ -38,13 +44,13 @@ export type TurtleActions = {
     inspectDown: () => Promise<void>;
 };
 
-export const wrapTurtleActions = (conn: WsConnection, computerId: number): TurtleActions => {
-    const sendPacket = (packet: RequestBody) => conn.sendPacket(computerId, packet);
+export const wrapTurtleActions = (conn: WsConnection, deviceId: number): TurtleActions => {
+    const sendPacket = (packet: RequestBody) => conn.sendPacket(deviceId, packet);
 
     const runCode = async (locks: LockType[], heartbeat: boolean, code: string) => {
-        await requestEval(conn, computerId, code, locks);
+        await requestEval(conn, { deviceId, code, locks });
         if (heartbeat) {
-            await requestHeartbeat(conn, computerId);
+            await requestHeartbeat(conn, deviceId);
         }
     };
 
@@ -52,14 +58,8 @@ export const wrapTurtleActions = (conn: WsConnection, computerId: number): Turtl
         restart: () => sendPacket({ type: "request:restart" }),
         scan: (range) => sendPacket({ type: "request:scan", range }),
 
-        eval: async (locks, code) => {
-            const data = await requestEval(conn, computerId, code, locks);
-            return { success: !data.isError, value: data.value };
-        },
-        heartbeat: async () => {
-            const packet = await requestHeartbeat(conn, computerId);
-            return packet;
-        },
+        eval: (options) => requestEval(conn, options),
+        heartbeat: () => requestHeartbeat(conn, deviceId),
 
         goForward: () => runCode(["movement"], false, "turtle.forward()"),
         goBack: () => runCode(["movement"], false, "turtle.back()"),

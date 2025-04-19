@@ -174,3 +174,5 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 server/blocks.json
+scripts/network.txt
+cc-manager-3.code-workspace

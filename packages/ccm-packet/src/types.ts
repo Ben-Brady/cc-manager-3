@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DeviceType, ItemSlot, LockType, Rotation, Vec3 } from "./generic";
+import { DeviceType, ItemSlot, LockType, Direction, Vec3, HandSlot } from "./generic";
 
 export type Computer = z.infer<typeof Computer>;
 export const Computer = z.object({
@@ -11,9 +11,9 @@ export const Computer = z.object({
     locks: LockType.array(),
     inventory: ItemSlot.array().optional(),
     selectedSlot: z.number().optional(),
-    facing: Rotation.optional(),
-    leftHand: ItemSlot.optional(),
-    rightHand: ItemSlot.optional(),
+    facing: Direction.optional(),
+    leftHand: HandSlot.optional(),
+    rightHand: HandSlot.optional(),
     label: z.string().optional(),
     position: Vec3.optional(),
 });

@@ -1,20 +1,23 @@
 local exports = {}
 
----@type ItemSlot[]
+---@return ItemSlot[]
 function exports.getInventory()
-    local inventory = {}
+    ---@type ItemSlot[]
+    local items = {}
 
     for i = 1, 16, 1 do
         local detail = turtle.getItemDetail(i, false)
         if detail then
-            inventory[i] = {
+            items[i] = {
                 name = detail.name,
                 count = detail.count
             }
+        else
+            items[i] = "empty"
         end
     end
 
-    return inventory
+    return items
 end
 
 return exports

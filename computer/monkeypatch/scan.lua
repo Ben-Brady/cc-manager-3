@@ -1,16 +1,15 @@
-local network = require "network"
+local network  = require "network"
 local settings = require "settings"
-local rotation = require "device.rotation"
 local location = require "device.location"
-local heartbeat = require "actions.heartbeat"
+local globals  = require "device.globals"
 
-local exports = {}
+local exports  = {}
 
 ---@param detectDirection "front" | "up" | "down"
 ---@return Vec3 | nil
 local function getPositionFromDirection(detectDirection)
     local pos = location.getPosition()
-    local facing = rotation.getRotation()
+    local facing = globals.facing
 
     if not pos then
         return nil

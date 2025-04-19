@@ -1,7 +1,10 @@
-local utils = require "utils"
+local utils     = require "utils"
 local heartbeat = require "actions.heartbeat"
+local globals   = require "device.globals"
+local network   = require "network"
+local inventory = require "actions.inventory"
 
-local exports = {}
+local exports   = {}
 
 ---@param func function
 local function loopEndless(func)
@@ -11,23 +14,11 @@ local function loopEndless(func)
     end
 end
 
-function exports.listenForPeripheralAttach()
-    loopEndless(function ()
-        os.pullEvent("peripheral")
-        heartbeat()
-    end)
-end
-function exports.listenForPeripheralDetach()
-    loopEndless(function ()
-        os.pullEvent("peripheral_detach")
-        heartbeat()
-    end)
-end
 
 function exports.listenForInventoryUpdate()
-    loopEndless(function ()
+    loopEndless(function()
         os.pullEvent("turtle_inventory")
-        heartbeat()
+        inventory()
     end)
 end
 

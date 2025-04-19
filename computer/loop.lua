@@ -21,7 +21,10 @@ function exports.run()
     local event = { n = 0 }
     while true do
         for i, thread in ipairs(threads) do
-            if thread and (thread.filter == nil or thread.filter == event[1] or event[1] == "terminate") then
+            local hasNoFilter = thread.filter == nil
+            local filterIsTarget = thread.filter == event[1]
+            local filterIsTerminate = event[1] == "terminate"
+            if thread and (hasNoFilter or filterIsTarget or filterIsTerminate) then
                 local ok, param = coroutine.resume(thread.co, table.unpack(event, 1, event.n))
 
                 if ok then
@@ -33,7 +36,10 @@ function exports.run()
                 if coroutine.status(thread.co) == "dead" then
                     table.remove(threads, i)
                 end
-                if #threads == 0 then return end
+
+                if #threads == 0 then
+                    return
+                end
             end
         end
 

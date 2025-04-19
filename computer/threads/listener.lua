@@ -1,6 +1,7 @@
 local tasks   = require "tasks"
 local network = require "network"
 local utils   = require "utils"
+local output  = require "display.output"
 
 
 local function acceptPacket()
@@ -13,7 +14,7 @@ end
 return function()
     while true do
         local success, msg = pcall(acceptPacket)
-        if not success then print("Error: " .. msg) end
+        if not success then output.log("Error: " .. msg) end
         utils.yield()
     end
 end

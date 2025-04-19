@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { ItemSlot } from "../index.js";
-import { Item, LockType, Vec3 } from "../generic.js";
+import { HandSlot, LockType, Vec3 } from "../generic.js";
 import { luaArray } from "../utils.js";
 
 export const HeartbeatRequest = z.object({
@@ -18,10 +18,10 @@ export const HeartbeatResponse = z.object({
         z.object({ type: z.literal("computer") }),
         z.object({
             type: z.literal("turtle"),
-            inventory: z.record(z.number(), Item),
+            inventory: ItemSlot.array(),
             selectedSlot: z.number(),
-            leftHand: ItemSlot.optional(),
-            rightHand: ItemSlot.optional(),
+            leftHand: HandSlot.optional(),
+            rightHand: HandSlot.optional(),
             fuel: z.number(),
         }),
         z.object({ type: z.literal("pocket") }),

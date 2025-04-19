@@ -1,7 +1,14 @@
+local monitor = peripheral.find("monitor")
+if monitor then
+    monitor.setTextScale(0.5)
+    term.redirect(monitor)
+end
+
 local loop = require "loop"
 local utils = require "utils"
 local threads = require "threads"
 local network = require "network"
+local stats = require "display.stats"
 local location = require "device.location"
 local deviceType = require "device.type"
 local heartbeat = require "actions.heartbeat"
@@ -14,13 +21,10 @@ location.updateFromGPS()
 
 loop.startThread(threads.executionThread)
 loop.startThread(threads.listenerThread)
-loop.startThread(threads.peripheralAttachWatcherThread)
-loop.startThread(threads.peripheralDetachWatcherThread)
 loop.startThread(threads.inventoryUpdateWatcherThread)
 
-loop.startThread(function()
-    utils.interval(2.5, heartbeat)
-end)
+-- utils.interval(2, heartbeat)
+utils.interval(0.25, stats.updateStats)
 
 if deviceType.getDeviceType() == "pocket" then
     loop.startThread(function()

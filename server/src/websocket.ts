@@ -62,9 +62,7 @@ export const attachWebsocketEndpoints = (app: Express) => {
 
             const msg = data.toString("utf-8");
             for (const callback of computerMessageListeners.values()) {
-                try {
-                    callback(msg);
-                } catch {}
+                callback(msg);
             }
         });
         clientMessageListeners.set(id, (packet) => ws.send(packet));

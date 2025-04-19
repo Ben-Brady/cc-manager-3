@@ -6,4 +6,7 @@ export {
     requestEval,
     requestHeartbeat,
     requestRestart,
+    waitForPacket,
+    type EvalOptions,
+    type EvalResult,
 } from "./requests";

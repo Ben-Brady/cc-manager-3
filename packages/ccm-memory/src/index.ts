@@ -64,6 +64,10 @@ export const createMemoryBank = (): MemoryBank => {
                 devices[deviceId] = generateInitialDevice(body, deviceId);
             }
 
+            if (deviceId in devices && body.uptime < devices[deviceId].uptime) {
+                devices[deviceId] = generateInitialDevice(body, deviceId);
+            }
+
             const device = devices[deviceId];
             applyHeartbeat(device, body);
             broadcastDeviceUpdate(device);
@@ -75,6 +79,16 @@ export const createMemoryBank = (): MemoryBank => {
                 const device = devices[deviceId];
                 device.lastUpdated = Date.now();
                 device.position = body.position;
+                broadcastDeviceUpdate(device);
+            }
+            return;
+        }
+
+        if (body.type === "update:equipped") {
+            if (deviceId in devices) {
+                const device = devices[deviceId];
+                if (body.side === "left") device.leftHand = body.item;
+                if (body.side === "right") device.rightHand = body.item;
                 broadcastDeviceUpdate(device);
             }
             return;
@@ -198,7 +212,7 @@ const applyHeartbeat = (computer: Computer, body: HeartbeatResponse) => {
             label: body.label,
             uptime: Math.floor(body.uptime),
             lastUpdated: Date.now(),
-            position: body.position ?? computer.position,
+            position: computer.position,
             locks: body.locks,
         });
         return;
@@ -213,8 +227,10 @@ const applyHeartbeat = (computer: Computer, body: HeartbeatResponse) => {
         type: deviceData.type,
         selectedSlot: deviceData.selectedSlot,
         locks: body.locks,
+        leftHand: deviceData.leftHand,
+        rightHand: deviceData.rightHand,
         fuel: deviceData.fuel,
         inventory: inventory,
-        position: body.position ?? computer.position,
+        position: body.position,
     });
 };
